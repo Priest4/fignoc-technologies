@@ -122,6 +122,21 @@ class SiteController extends Controller
         ]);
     }
 
+    /**
+     * Standalone website-service landing page. Navigation-free (one offer, one
+     * decision) — everything it needs comes from config('fignoc.landing_website'),
+     * which is also where the figures that must be verified before launch live.
+     */
+    public function websiteLanding()
+    {
+        // Passed whole: the page is one long argument built from one config
+        // block, and naming fifteen variables here would only add a place for
+        // them to drift out of step.
+        return view('pages.landing.website', [
+            'lp' => config('fignoc.landing_website'),
+        ]);
+    }
+
     public function privacy()
     {
         return view('pages.legal.privacy');
@@ -143,6 +158,7 @@ class SiteController extends Controller
             ['name' => 'products', 'priority' => '0.8'],
             ['name' => 'about', 'priority' => '0.7'],
             ['name' => 'contact', 'priority' => '0.8'],
+            ['name' => 'landing.website', 'priority' => '0.9'],
             ['name' => 'insights', 'priority' => '0.7'],
             ['name' => 'privacy', 'priority' => '0.3'],
             ['name' => 'terms', 'priority' => '0.3'],

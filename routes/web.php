@@ -23,6 +23,12 @@ Route::post('/contact', [ContactController::class, 'store'])->name('contact.stor
 Route::get('/insights', [SiteController::class, 'insightsIndex'])->name('insights');
 Route::get('/insights/{insight:slug}', [SiteController::class, 'insightShow'])->name('insights.show');
 
+// Standalone landing page for the website service — no navigation, one offer,
+// one decision. The destination for paid traffic.
+Route::get('/website-design', [SiteController::class, 'websiteLanding'])->name('landing.website');
+Route::post('/website-design/enquiry', [ContactController::class, 'websiteEnquiry'])
+    ->name('landing.website.enquiry');
+
 Route::get('/privacy', [SiteController::class, 'privacy'])->name('privacy');
 Route::get('/terms', [SiteController::class, 'terms'])->name('terms');
 

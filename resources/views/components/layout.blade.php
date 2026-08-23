@@ -4,6 +4,10 @@
     'canonical' => null,
     'ogImage' => null,
     'ogType' => 'website',
+    // 'full'  → site header + full footer (every normal page).
+    // 'bare'  → stripped chrome for landing pages: no navigation, one offer,
+    //           one decision, no exits. Legal links only in the footer.
+    'chrome' => 'full',
 ])
 @php
     $brand = config('fignoc.brand');
@@ -157,18 +161,51 @@
         }, { passive: true, capture: true });
         document.addEventListener('submit', function (e) {
             if (e.target.matches('form[action*="contact"]')) gtag('event', 'contact_form_submit');
+            // Landing-page enquiries: an attempt, distinct from the confirmed
+            // conversion fired from the success state below.
+            if (e.target.matches('#lp-quote-form')) gtag('event', 'lead_form_submit', { form: 'scoping_dialog' });
+            if (e.target.matches('#lp-check')) gtag('event', 'lead_form_submit', { form: 'visibility_check' });
         }, true);
+        // Server-confirmed conversion — the one to import into Google Ads.
+        @if (session('website_enquiry'))
+            gtag('event', 'generate_lead', {
+                currency: 'USD',
+                value: {{ (int) (config('fignoc.landing_website.packages.0.price') ?? 80) }},
+                form: '{{ session('website_enquiry_form', 'landing') }}'
+            });
+        @endif
+    </script>
+    @endif
+
+    {{-- Microsoft Clarity — session replay and heatmaps. Only loads when a real
+         project ID is configured. --}}
+    @if ($clarity = config('fignoc.analytics.clarity'))
+    <script>
+        (function(c,l,a,r,i,t,y){
+            c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+            t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+            y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+        })(window, document, "clarity", "script", "{{ $clarity }}");
     </script>
     @endif
 </head>
-<body class="font-sans antialiased">
+@php $bare = $chrome === 'bare'; @endphp
+<body class="font-sans antialiased{{ $bare ? ' is-bare' : '' }}">
     <a href="#main" class="skip-link">Skip to content</a>
 
-    <x-navbar />
+    @if ($bare)
+        <x-landing-header />
+    @else
+        <x-navbar />
+    @endif
 
     <main id="main">{{ $slot }}</main>
 
-    <x-footer />
+    @if ($bare)
+        <x-landing-footer />
+    @else
+        <x-footer />
+    @endif
 
     @php $waNum = preg_replace('/\D+/', '', $brand['whatsapp'] ?? ''); @endphp
     @if ($waNum)
