@@ -2,7 +2,7 @@
 <x-layout
     :title="null"
     :canonical="route('home')"
-    description="Fignoc Technologies is a Harare software company. We build custom software, web systems, apps and online stores — like Recruitment263, NestZim, CV263 and Shop263 — and run the digital growth (SEO, AEO/GEO, ads) that gets Zimbabwean businesses found.">
+    description="Harare software company. We build custom software, websites and online stores — then run the SEO, AEO and ads that get Zimbabwean businesses found.">
 
     {{-- 1 ─ CINEMATIC HERO — fullscreen video collapses to a centred rectangle while
          two image rows assemble above & below (Elementor-style). motion.js drives it. --}}

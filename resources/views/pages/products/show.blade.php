@@ -3,8 +3,9 @@
     $long = data_get($product->detail, 'long', $product->description);
 @endphp
 <x-layout
-    :title="$product->name"
-    :description="$product->headline ?? $product->description"
+    {{-- The tag distinguishes this from /work/{slug} for the same platform. --}}
+    :title="$product->name . ($product->tag ? ' — ' . $product->tag : ' — our product')"
+    :description="\Illuminate\Support\Str::limit(trim(($product->headline ? $product->headline . ' ' : '') . $product->description), 152)"
     :canonical="route('products.show', $product)"
     :og-image="$product->screenshot_path">
 

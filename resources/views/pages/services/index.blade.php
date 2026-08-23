@@ -44,7 +44,7 @@
 @endphp
 <x-layout
     title="Services"
-    description="Fignoc is a software company and growth agency: we build websites, web systems, custom software and ecommerce, then rank you on Google and get you named in AI answers."
+    description="We build websites, web systems, custom software and online stores — then rank you on Google and get you named in AI answers."
     :canonical="route('services')">
 
     <x-breadcrumbs :items="[
