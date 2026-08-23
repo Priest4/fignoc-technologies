@@ -1,0 +1,17 @@
+---
+# cPanel Git Version Control runs these tasks when you press
+# "Deploy HEAD Commit" (or automatically on push, if you push straight to a
+# repository hosted on the cPanel account).
+#
+# cPanel concatenates the tasks into ONE shell script that runs as your cPanel
+# user, from the repository root, with a thin PATH and no login profile. So
+# every real decision (which PHP, which composer, where public_html points)
+# lives in deploy/deploy.sh, which resolves all of that itself.
+deployment:
+  tasks:
+    - export APP_DIR="$PWD"
+    - if [ ! -f "$APP_DIR/deploy/deploy.sh" ]; then export APP_DIR="$HOME/fignoc"; fi
+    - export DEPLOY_LOG="$APP_DIR/storage/logs/deploy.log"
+    - /bin/mkdir -p "$APP_DIR/storage/logs"
+    - /bin/bash "$APP_DIR/deploy/deploy.sh" >> "$DEPLOY_LOG" 2>&1 || { /usr/bin/tail -n 60 "$DEPLOY_LOG"; exit 1; }
+    - /usr/bin/tail -n 30 "$DEPLOY_LOG"

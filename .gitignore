@@ -33,3 +33,7 @@ Thumbs.db
 /lh-*.json
 /lighthouse-*.json
 /pw-*.mjs
+
+# Deploy
+/deploy/local.env
+/storage/audit
