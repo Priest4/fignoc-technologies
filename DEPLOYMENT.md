@@ -11,8 +11,8 @@ This account is shared by several sites, so the Laravel site is deployed as an
 | cPanel user | `daxutaxh` |
 | Home | `/home/daxutaxh` |
 | Domain | `fignoc.co.zw` (addon domain) |
-| App directory | `/home/daxutaxh/apps/fignoc-technologies` |
-| Document root | `/home/daxutaxh/apps/fignoc-technologies/public` (set on the addon domain — no symlink, no copying) |
+| App directory | `/home/daxutaxh/fignoc-technologies` |
+| Document root | `/home/daxutaxh/fignoc-technologies/public` (set on the addon domain — no symlink, no copying) |
 | Database | `daxutaxh_fgnc` |
 | GitHub repo | `github.com/Priest4/fignoc-technologies` |
 | Deployed branch | `production` (built by GitHub Actions from `main`) |
@@ -21,7 +21,7 @@ This account is shared by several sites, so the Laravel site is deployed as an
 site for `fignoconline.co.zw`, `~/public_html` is that site's document root, and
 `~/nestzim.co.zw`, `~/fignoc-old`, `~/nestzim-backend-BEFORE-GIT` are other
 apps. Confirm any target directory is free before pointing cPanel at it:
-`ls -d ~/apps/fignoc-technologies 2>/dev/null || echo free`
+`ls -d ~/fignoc-technologies 2>/dev/null || echo free`
 
 ## How it fits together
 
@@ -109,7 +109,7 @@ uapi Mysql set_privileges_on_database user=daxutaxh_fgnc \
 Check the path is free first — `~/fignoc` is **not**, it is the live Django site:
 
 ```bash
-ls -d ~/apps/fignoc-technologies 2>/dev/null || echo free
+ls -d ~/fignoc-technologies 2>/dev/null || echo free
 ```
 
 cPanel → **Git Version Control** → *Create*:
@@ -117,7 +117,7 @@ cPanel → **Git Version Control** → *Create*:
 | Field | Value |
 |---|---|
 | Clone URL | `https://github.com/Priest4/fignoc-technologies.git` |
-| Repository Path | `apps/fignoc-technologies` |
+| Repository Path | `fignoc-technologies` |
 | Repository Name | `fignoc-technologies` |
 
 Leave *Clone a Repository* toggled on. cPanel refuses to clone into a non-empty
@@ -130,7 +130,7 @@ After it clones, open the repo's **Pull or Deploy** tab and switch the checked-o
 branch to `production`. If the UI will not offer it, do it over SSH:
 
 ```bash
-cd ~/apps/fignoc-technologies && git fetch origin production && git checkout production
+cd ~/fignoc-technologies && git fetch origin production && git checkout production
 ```
 
 ### 4. Add the domain with its own document root
@@ -141,7 +141,7 @@ cPanel → **Domains** → *Create A Domain*:
 |---|---|
 | Domain | `fignoc.co.zw` |
 | Share document root | **unticked** |
-| Document Root | `apps/fignoc-technologies/public` |
+| Document Root | `fignoc-technologies/public` |
 
 This is the step that keeps the other sites safe: `fignoc.co.zw` gets its own
 document root and `~/public_html` — which serves `fignoconline.co.zw` — is never
@@ -163,7 +163,7 @@ any that are missing.
 ### 6. Prepare the app
 
 ```bash
-cd ~/apps/fignoc-technologies
+cd ~/fignoc-technologies
 bash deploy/server-setup.sh              # report: what it would change
 bash deploy/server-setup.sh --apply      # do it
 nano .env                                # DB_PASSWORD, MAIL_PASSWORD, APP_URL
@@ -180,7 +180,7 @@ An unquoted `#` silently truncates the value at that character.
 ### 7. First deploy
 
 ```bash
-bash ~/apps/fignoc-technologies/deploy/deploy.sh
+bash ~/fignoc-technologies/deploy/deploy.sh
 ```
 
 Expect: composer install, migrations, `optimize`, permissions fixed, and
@@ -190,7 +190,7 @@ On a fresh database, seed the catalogue content and create the Filament admin
 (the panel lives at `/admin`):
 
 ```bash
-cd ~/apps/fignoc-technologies
+cd ~/fignoc-technologies
 PHP=$(grep '^PHP_BIN=' deploy/local.env | cut -d= -f2)
 $PHP artisan db:seed --force
 $PHP artisan make:filament-user
@@ -202,14 +202,14 @@ cPanel → **Cron Jobs**, once per minute — the scheduler, which also drives l
 rotation and any future queued work:
 
 ```
-* * * * * /opt/cpanel/ea-php83/root/usr/bin/php /home/daxutaxh/apps/fignoc-technologies/artisan schedule:run >> /dev/null 2>&1
+* * * * * /opt/cpanel/ea-php83/root/usr/bin/php /home/daxutaxh/fignoc-technologies/artisan schedule:run >> /dev/null 2>&1
 ```
 
 The contact form sends mail synchronously via `Mail::raw`, so no queue worker is
 required today. If mail moves to a queue, add:
 
 ```
-* * * * * /opt/cpanel/ea-php83/root/usr/bin/php /home/daxutaxh/apps/fignoc-technologies/artisan queue:work --stop-when-empty --tries=3 >> /dev/null 2>&1
+* * * * * /opt/cpanel/ea-php83/root/usr/bin/php /home/daxutaxh/fignoc-technologies/artisan queue:work --stop-when-empty --tries=3 >> /dev/null 2>&1
 ```
 
 ---
@@ -223,10 +223,10 @@ required today. If mail moves to a queue, add:
 Or skip the UI entirely:
 
 ```bash
-ssh daxutaxh@host 'cd ~/apps/fignoc-technologies && git pull --ff-only origin production && bash deploy/deploy.sh'
+ssh daxutaxh@host 'cd ~/fignoc-technologies && git pull --ff-only origin production && bash deploy/deploy.sh'
 ```
 
-Deploy output is appended to `~/apps/fignoc-technologies/storage/logs/deploy.log`; cPanel also
+Deploy output is appended to `~/fignoc-technologies/storage/logs/deploy.log`; cPanel also
 keeps its own copy under `~/.cpanel/logs/`.
 
 ## What survives a deploy
@@ -237,13 +237,13 @@ config/route/view caches, `public_html` contents (copy layout only).
 
 ## Troubleshooting
 
-**500 on every page.** `tail -50 ~/apps/fignoc-technologies/storage/logs/laravel-*.log`. Usually a
+**500 on every page.** `tail -50 ~/fignoc-technologies/storage/logs/laravel-*.log`. Usually a
 `.env` credential or a missing PHP extension. Never flip `APP_DEBUG=true` on the
 live domain to find out — read the log.
 
 **Unstyled pages / "Vite manifest not found".** The deployed branch is `main`
 instead of `production`, or the Actions run failed. Confirm on the server:
-`ls ~/apps/fignoc-technologies/public/build/manifest.json`.
+`ls ~/fignoc-technologies/public/build/manifest.json`.
 
 **403 Forbidden, or the wrong site loads.** The domain's document root is not
 where you think. Check what cPanel actually recorded:
@@ -252,9 +252,9 @@ where you think. Check what cPanel actually recorded:
 uapi DomainInfo single_domain_data domain=fignoc.co.zw | grep -i documentroot
 ```
 
-It must read `/home/daxutaxh/apps/fignoc-technologies/public`. Fix it in cPanel →
+It must read `/home/daxutaxh/fignoc-technologies/public`. Fix it in cPanel →
 Domains → `fignoc.co.zw` → *Document Root*. A 403 with the right document root
-usually means `public/` lost its permissions: `chmod 755 ~/apps/fignoc-technologies/public`.
+usually means `public/` lost its permissions: `chmod 755 ~/fignoc-technologies/public`.
 
 **Never** point this site at `~/public_html`, and never delete or move that
 directory — it is `fignoconline.co.zw`'s live document root. The `symlink` and
@@ -264,7 +264,7 @@ account, stay on the default `docroot` layout.
 **Deploy failed and the site is stuck on the maintenance page.**
 
 ```bash
-cd ~/apps/fignoc-technologies && $(grep '^PHP_BIN=' deploy/local.env | cut -d= -f2) artisan up
+cd ~/fignoc-technologies && $(grep '^PHP_BIN=' deploy/local.env | cut -d= -f2) artisan up
 ```
 
 (`deploy.sh` has an EXIT trap that does this automatically; this is for the case
@@ -282,7 +282,7 @@ ls -d /opt/cpanel/ea-php*/root/usr/bin/php
 the server modified a tracked file.
 
 ```bash
-cd ~/apps/fignoc-technologies && git status --short      # look first
+cd ~/fignoc-technologies && git status --short      # look first
 git checkout -- <the file>             # then discard
 ```
 
@@ -293,7 +293,7 @@ snapshot before schema-heavy deploys: cPanel → *phpMyAdmin → Export*, or
 ## Rolling back code
 
 ```bash
-cd ~/apps/fignoc-technologies
+cd ~/fignoc-technologies
 git log --oneline -10          # find the previous good production commit
 git checkout <sha>
 bash deploy/deploy.sh
