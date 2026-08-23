@@ -379,7 +379,7 @@
                 <x-lp-img
                     src="proof/seo-results.jpg"
                     sizes="(min-width: 960px) 896px, 92vw"
-                    :alt="'Google Search Console performance for recruitment263.co.zw: ' . ['proof']['metrics'][0]['value'] . ' monthly impressions, average position ' . ltrim(['proof']['metrics'][1]['value'], '#') . ', ' . ['proof']['metrics'][2]['value'] . ' click-through rate." />
+                    :alt="'Google Search Console performance for recruitment263.co.zw: ' . $lp['proof']['metrics'][0]['value'] . ' monthly impressions, average position ' . ltrim($lp['proof']['metrics'][1]['value'], '#') . ', ' . $lp['proof']['metrics'][2]['value'] . ' click-through rate.'" />
             </div>
 
             <div class="lp-ch-cta">
