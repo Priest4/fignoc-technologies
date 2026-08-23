@@ -3,16 +3,25 @@
 Laravel 13 + Filament 4 on shared cPanel hosting, deployed by cPanel's **Git
 Version Control** pulling from GitHub.
 
-Account facts assumed below (change them if wrong):
+This account is shared by several sites, so the Laravel site is deployed as an
+**addon domain with its own document root** and never touches the other ones.
 
 | | |
 |---|---|
 | cPanel user | `daxutaxh` |
 | Home | `/home/daxutaxh` |
-| App directory | `/home/daxutaxh/fignoc` |
-| Web root | `/home/daxutaxh/public_html` → symlink to `/home/daxutaxh/fignoc/public` |
+| Domain | `fignoc.co.zw` (addon domain) |
+| App directory | `/home/daxutaxh/apps/fignoc-technologies` |
+| Document root | `/home/daxutaxh/apps/fignoc-technologies/public` (set on the addon domain — no symlink, no copying) |
+| Database | `daxutaxh_fgnc` |
 | GitHub repo | `github.com/Priest4/fignoc-technologies` |
 | Deployed branch | `production` (built by GitHub Actions from `main`) |
+
+**Occupied paths on this account — do not reuse:** `~/fignoc` is the live Django
+site for `fignoconline.co.zw`, `~/public_html` is that site's document root, and
+`~/nestzim.co.zw`, `~/fignoc-old`, `~/nestzim-backend-BEFORE-GIT` are other
+apps. Confirm any target directory is free before pointing cPanel at it:
+`ls -d ~/apps/fignoc-technologies 2>/dev/null || echo free`
 
 ## How it fits together
 
@@ -41,9 +50,10 @@ Two things drive that split:
   on the previous `production` tip (and on `main`, for lineage), so cPanel's pull
   never hits a non-fast-forward. Nothing is force-pushed.
 
-The app directory sits **outside** the web root, so `.env`, `.git`, `vendor/`,
-`storage/`, and your source are not reachable over HTTP. That is the whole reason
-for the symlink layout.
+The addon domain's document root points at `<app>/public`, so `.env`, `.git`,
+`vendor/`, `storage/`, and your source all sit one level *above* the web root and
+are not reachable over HTTP. Nothing is symlinked and nothing is copied — the
+document root simply is the app's own `public/` directory.
 
 ## Files in this repo
 
@@ -73,70 +83,104 @@ go to *Settings → Actions → General → Workflow permissions* and select
 **Read and write permissions**, then re-run it. When it goes green you have a
 `production` branch.
 
-### 2. Set PHP 8.3+ for the domain
+### 2. Create the MySQL database
 
-cPanel → **MultiPHP Manager** → tick `fignoc.co.zw` → set **8.3** (or newer) →
-Apply. Then cPanel → **Select PHP Version → Extensions** and make sure these are
-on: `pdo_mysql`, `mbstring`, `openssl`, `tokenizer`, `xml`, `ctype`, `fileinfo`,
-`curl`, `dom`, `bcmath`, `intl`, `zip`, `gd`. `server-setup.sh` verifies all of
-these and names any that are missing.
-
-### 3. Create the MySQL database
-
-cPanel → **MySQL Databases**: create database `fignoc` and user `fignoc` (cPanel
+cPanel → **MySQL Databases**: create database `fgnc` and user `fgnc` (cPanel
 prefixes both with `daxutaxh_`), then **add the user to the database with ALL
-PRIVILEGES**. Keep the password — it goes into `.env` in step 5.
+PRIVILEGES**. Keep the password — it goes into `.env` in step 6.
+
+The short name is deliberate: this account's existing databases (`daxutaxh_figno`,
+`daxutaxh_figones`) show cPanel truncating at 16 characters including the prefix,
+so anything longer comes back mangled. Give this site its **own** database — do
+not point it at `daxutaxh_figno`, which belongs to the Django site; Laravel's
+`migrate` would build its whole schema inside it.
 
 Over SSH instead, if you prefer:
 
 ```bash
-uapi Mysql create_database name=daxutaxh_fignoc
-uapi Mysql create_user name=daxutaxh_fignoc password='<strong-password>'
-uapi Mysql set_privileges_on_database user=daxutaxh_fignoc \
-    database=daxutaxh_fignoc privileges=ALL
+uapi Mysql create_database name=daxutaxh_fgnc
+uapi Mysql create_user name=daxutaxh_fgnc password='<strong-password>'
+uapi Mysql set_privileges_on_database user=daxutaxh_fgnc \
+    database=daxutaxh_fgnc privileges=ALL
 ```
 
-### 4. Clone the repo through cPanel
+### 3. Clone the repo through cPanel
+
+Check the path is free first — `~/fignoc` is **not**, it is the live Django site:
+
+```bash
+ls -d ~/apps/fignoc-technologies 2>/dev/null || echo free
+```
 
 cPanel → **Git Version Control** → *Create*:
 
 | Field | Value |
 |---|---|
 | Clone URL | `https://github.com/Priest4/fignoc-technologies.git` |
-| Repository Path | `fignoc` |
-| Repository Name | `fignoc` |
+| Repository Path | `apps/fignoc-technologies` |
+| Repository Name | `fignoc-technologies` |
 
-Leave *Clone a Repository* toggled on. If the repo is **private**, use
-`git@github.com:Priest4/fignoc-technologies.git` and first copy the key from
-cPanel → *SSH Access → Manage SSH Keys* into GitHub → *repo Settings → Deploy
-keys*.
+Leave *Clone a Repository* toggled on. cPanel refuses to clone into a non-empty
+directory, which is the safety net that stops this from landing on another site.
+If the repo is **private**, use `git@github.com:Priest4/fignoc-technologies.git`
+and first copy the key from cPanel → *SSH Access → Manage SSH Keys* into GitHub →
+*repo Settings → Deploy keys*.
 
 After it clones, open the repo's **Pull or Deploy** tab and switch the checked-out
 branch to `production`. If the UI will not offer it, do it over SSH:
 
 ```bash
-cd ~/fignoc && git fetch origin production && git checkout production
+cd ~/apps/fignoc-technologies && git fetch origin production && git checkout production
 ```
 
-### 5. Prepare the server
+### 4. Add the domain with its own document root
+
+cPanel → **Domains** → *Create A Domain*:
+
+| Field | Value |
+|---|---|
+| Domain | `fignoc.co.zw` |
+| Share document root | **unticked** |
+| Document Root | `apps/fignoc-technologies/public` |
+
+This is the step that keeps the other sites safe: `fignoc.co.zw` gets its own
+document root and `~/public_html` — which serves `fignoconline.co.zw` — is never
+involved. Do it *after* the clone, so `public/` already exists.
+
+`fignoc.co.zw`'s DNS has to point at this server, or the domain will resolve
+elsewhere no matter what cPanel says. Check with `dig +short fignoc.co.zw` and
+compare against this account's IP.
+
+### 5. Set PHP 8.3+ for the domain
+
+cPanel → **MultiPHP Manager** → tick `fignoc.co.zw` → set **8.3** (or newer) →
+Apply. Set it per-domain, not account-wide — the Django sites here have their own
+requirements. Then cPanel → **Select PHP Version → Extensions**: `pdo_mysql`,
+`mbstring`, `openssl`, `tokenizer`, `xml`, `ctype`, `fileinfo`, `curl`, `dom`,
+`bcmath`, `intl`, `zip`, `gd`. `server-setup.sh` verifies all of these and names
+any that are missing.
+
+### 6. Prepare the app
 
 ```bash
-cd ~/fignoc
+cd ~/apps/fignoc-technologies
 bash deploy/server-setup.sh              # report: what it would change
 bash deploy/server-setup.sh --apply      # do it
 nano .env                                # DB_PASSWORD, MAIL_PASSWORD, APP_URL
 ```
 
-`--apply` writes `deploy/local.env`, creates `.env` from the template, creates
-the writable storage dirs, and replaces `public_html` with a symlink to
-`~/fignoc/public` — moving the old `public_html` aside to
-`public_html.bak.<timestamp>` first. Delete that backup once the site is
-verified.
+`--apply` writes `deploy/local.env`, creates `.env` from the template, generates
+`APP_KEY`, and creates the writable storage directories. In the default
+`docroot` layout it touches **nothing** outside the app directory — `public_html`
+is left exactly as it is.
 
-### 6. First deploy
+Quote any password containing `@` or `#` in `.env`: `DB_PASSWORD="pa@ss#word"`.
+An unquoted `#` silently truncates the value at that character.
+
+### 7. First deploy
 
 ```bash
-bash ~/fignoc/deploy/deploy.sh
+bash ~/apps/fignoc-technologies/deploy/deploy.sh
 ```
 
 Expect: composer install, migrations, `optimize`, permissions fixed, and
@@ -146,26 +190,26 @@ On a fresh database, seed the catalogue content and create the Filament admin
 (the panel lives at `/admin`):
 
 ```bash
-cd ~/fignoc
+cd ~/apps/fignoc-technologies
 PHP=$(grep '^PHP_BIN=' deploy/local.env | cut -d= -f2)
 $PHP artisan db:seed --force
 $PHP artisan make:filament-user
 ```
 
-### 7. Cron (optional but recommended)
+### 8. Cron (optional but recommended)
 
 cPanel → **Cron Jobs**, once per minute — the scheduler, which also drives log
 rotation and any future queued work:
 
 ```
-* * * * * /opt/cpanel/ea-php83/root/usr/bin/php /home/daxutaxh/fignoc/artisan schedule:run >> /dev/null 2>&1
+* * * * * /opt/cpanel/ea-php83/root/usr/bin/php /home/daxutaxh/apps/fignoc-technologies/artisan schedule:run >> /dev/null 2>&1
 ```
 
 The contact form sends mail synchronously via `Mail::raw`, so no queue worker is
 required today. If mail moves to a queue, add:
 
 ```
-* * * * * /opt/cpanel/ea-php83/root/usr/bin/php /home/daxutaxh/fignoc/artisan queue:work --stop-when-empty --tries=3 >> /dev/null 2>&1
+* * * * * /opt/cpanel/ea-php83/root/usr/bin/php /home/daxutaxh/apps/fignoc-technologies/artisan queue:work --stop-when-empty --tries=3 >> /dev/null 2>&1
 ```
 
 ---
@@ -179,10 +223,10 @@ required today. If mail moves to a queue, add:
 Or skip the UI entirely:
 
 ```bash
-ssh daxutaxh@host 'cd ~/fignoc && git pull --ff-only origin production && bash deploy/deploy.sh'
+ssh daxutaxh@host 'cd ~/apps/fignoc-technologies && git pull --ff-only origin production && bash deploy/deploy.sh'
 ```
 
-Deploy output is appended to `~/fignoc/storage/logs/deploy.log`; cPanel also
+Deploy output is appended to `~/apps/fignoc-technologies/storage/logs/deploy.log`; cPanel also
 keeps its own copy under `~/.cpanel/logs/`.
 
 ## What survives a deploy
@@ -193,31 +237,34 @@ config/route/view caches, `public_html` contents (copy layout only).
 
 ## Troubleshooting
 
-**500 on every page.** `tail -50 ~/fignoc/storage/logs/laravel-*.log`. Usually a
+**500 on every page.** `tail -50 ~/apps/fignoc-technologies/storage/logs/laravel-*.log`. Usually a
 `.env` credential or a missing PHP extension. Never flip `APP_DEBUG=true` on the
 live domain to find out — read the log.
 
 **Unstyled pages / "Vite manifest not found".** The deployed branch is `main`
 instead of `production`, or the Actions run failed. Confirm on the server:
-`ls ~/fignoc/public/build/manifest.json`.
+`ls ~/apps/fignoc-technologies/public/build/manifest.json`.
 
-**403 Forbidden after setup.** The host refuses symlinked document roots. Either
-point the domain's document root at `fignoc/public` (cPanel → Domains → the
-domain → *Document Root*), or fall back to the copy layout:
+**403 Forbidden, or the wrong site loads.** The domain's document root is not
+where you think. Check what cPanel actually recorded:
 
 ```bash
-rm ~/public_html && mkdir ~/public_html
-sed -i 's/^PUBLIC_HTML_PRUNE=.*/PUBLIC_HTML_PRUNE=1/' ~/fignoc/deploy/local.env
-bash ~/fignoc/deploy/deploy.sh
+uapi DomainInfo single_domain_data domain=fignoc.co.zw | grep -i documentroot
 ```
 
-`deploy.sh` detects that layout on its own, rsyncs `public/` into `public_html`,
-and writes a front-controller shim pointing back at `~/fignoc`.
+It must read `/home/daxutaxh/apps/fignoc-technologies/public`. Fix it in cPanel →
+Domains → `fignoc.co.zw` → *Document Root*. A 403 with the right document root
+usually means `public/` lost its permissions: `chmod 755 ~/apps/fignoc-technologies/public`.
+
+**Never** point this site at `~/public_html`, and never delete or move that
+directory — it is `fignoconline.co.zw`'s live document root. The `symlink` and
+`copy` layouts in `server-setup.sh` exist for single-site accounts; on this
+account, stay on the default `docroot` layout.
 
 **Deploy failed and the site is stuck on the maintenance page.**
 
 ```bash
-cd ~/fignoc && $(grep '^PHP_BIN=' deploy/local.env | cut -d= -f2) artisan up
+cd ~/apps/fignoc-technologies && $(grep '^PHP_BIN=' deploy/local.env | cut -d= -f2) artisan up
 ```
 
 (`deploy.sh` has an EXIT trap that does this automatically; this is for the case
@@ -235,18 +282,18 @@ ls -d /opt/cpanel/ea-php*/root/usr/bin/php
 the server modified a tracked file.
 
 ```bash
-cd ~/fignoc && git status --short      # look first
+cd ~/apps/fignoc-technologies && git status --short      # look first
 git checkout -- <the file>             # then discard
 ```
 
 **Migration went wrong.** There is no automatic rollback. Take a database
 snapshot before schema-heavy deploys: cPanel → *phpMyAdmin → Export*, or
-`mysqldump -u daxutaxh_fignoc -p daxutaxh_fignoc > ~/backup-fignoc.sql`.
+`mysqldump -u daxutaxh_fgnc -p daxutaxh_fgnc > ~/backup-fignoc.sql`.
 
 ## Rolling back code
 
 ```bash
-cd ~/fignoc
+cd ~/apps/fignoc-technologies
 git log --oneline -10          # find the previous good production commit
 git checkout <sha>
 bash deploy/deploy.sh
