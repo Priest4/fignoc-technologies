@@ -493,7 +493,7 @@ class FignocSeeder extends Seeder
                 ],
                 'who_for' => ['Freelancers and tradespeople', 'Clients hiring local skills', 'Anyone building a work reputation'],
                 'work_slug' => 'nicejob',
-                'external_url' => null,
+                'external_url' => 'https://www.nicejob.co.zw/',
                 'screenshot_path' => 'images/people/afr-man-stairs.jpg',
                 'detail' => ['long' => 'NiceJob is a mobile-first skills marketplace and reputation platform: freelancers show profiles and portfolios, clients post work, both sides message in real time and leave two-way reviews. Its direct-deal model takes no cut of the payment — the platform earns trust, not transaction fees.'],
                 'sort_order' => 4,
