@@ -37,3 +37,6 @@ Thumbs.db
 # Deploy
 /deploy/local.env
 /storage/audit
+
+# Generated review artifact — rebuild with: node tools/build-proto.mjs
+/landing-prototype.html
