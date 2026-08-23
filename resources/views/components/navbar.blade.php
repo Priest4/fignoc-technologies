@@ -28,7 +28,8 @@
         <div class="nav-pill">
         <div class="nav-bar">
             <a href="{{ route('home') }}" class="wordmark" aria-label="Fignoc Technologies — home" @click="open=false">
-                Fignoc<span class="wordmark-dot">.</span>
+                <span class="wordmark-name">Fignoc<span class="wordmark-dot">.</span></span>
+                <span class="wordmark-sub">Technologies</span>
             </a>
 
             <nav class="hidden lg:flex items-center gap-8" aria-label="Primary">

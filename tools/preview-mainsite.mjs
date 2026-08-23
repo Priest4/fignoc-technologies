@@ -81,6 +81,49 @@ const html = `<!DOCTYPE html>
   </div>
 </section>
 
+<section style="background: var(--color-paper); padding: 2rem 0;">
+  <div class="container-x" style="display:flex; gap:3rem; align-items:center; flex-wrap:wrap;">
+    <a href="#" class="wordmark">
+      <span class="wordmark-name">Fignoc<span class="wordmark-dot">.</span></span>
+      <span class="wordmark-sub">Technologies</span>
+    </a>
+    <img src="public/favicon-192.png" alt="favicon" width="48" height="48" style="border-radius:10px;">
+  </div>
+</section>
+
+<header class="svc-detail-head">
+  <div class="section container-x">
+    <span class="eyebrow">Build · Service</span>
+    <h1 class="display" style="margin-top:1rem; max-width:16ch;">Web development</h1>
+    <p style="margin-top:1.25rem; max-width:54ch; color:var(--color-body); font-size:1.125rem; line-height:1.8;">
+      Fast, custom-coded websites and web systems, built to be found. This header exists to check the
+      service-page wash and the etched lines behind it.
+    </p>
+    <div style="margin-top:1.5rem; display:flex; gap:0.75rem; flex-wrap:wrap;">
+      <a href="#" class="btn btn-primary">Start a project</a>
+      <a href="#" class="btn btn-ghost">All services</a>
+    </div>
+  </div>
+</header>
+
+<section class="section container-x">
+  <div class="svc-proof">
+    <div class="svc-proof-copy">
+      <span class="svc-proof-eyebrow">Proof, not promises</span>
+      <h2 class="svc-proof-title">We don't just offer this — we run it ourselves.</h2>
+      <p class="svc-proof-text"><strong>Recruitment263</strong> is a platform we rank — 12.5K impressions a month.</p>
+    </div>
+    <a href="#" class="btn btn-on-dark svc-proof-cta">See Recruitment263</a>
+  </div>
+</section>
+
+<section class="cta-band">
+  <div class="container-x section">
+    <span class="eyebrow" style="color: color-mix(in srgb, var(--color-on-dark) 70%, transparent);">Start a project</span>
+    <h2 class="display" style="margin-top:1rem; color: var(--color-paper); max-width:20ch;">Let's build something that pays for itself.</h2>
+  </div>
+</section>
+
 <section class="section showcase-grad">
   <div class="container-x">
     <span class="eyebrow">Etched texture on a light ground</span>
@@ -121,6 +164,7 @@ for (const vp of [{ n: 'desktop', w: 1440, h: 900 }, { n: 'mobile', w: 390, h: 8
   console.log('  etched ::after    content=' + check.etchedContent + '  gradient layers=' + check.etchedLayers);
 
   await page.screenshot({ path: path.join(outDir, `mainsite-hero-${vp.n}.png`) });
+  await page.screenshot({ path: path.join(outDir, `mainsite-full-${vp.n}.png`), fullPage: true });
   await ctx.close();
 }
 await browser.close();

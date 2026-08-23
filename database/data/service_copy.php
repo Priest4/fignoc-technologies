@@ -37,7 +37,7 @@ return [
             'what_it_is' => 'When off-the-shelf software does not fit, we build it — SaaS products, POS systems, APIs, and mobile apps for Android and iOS. We design around your actual workflow, not a generic template.',
             'who_for' => 'For businesses and founders with a specific process or product idea that no existing tool handles well.',
             'delivers' => ['SaaS and web application builds', 'Android and iOS mobile apps', 'POS and inventory systems', 'APIs and third-party integrations', 'Local payment integration where you need it'],
-            'why' => 'We have shipped and now operate our own products, including Recruitment263 and Shop263, with NiceJob in development. We build software we stake our own name on — and you own the result.',
+            'why' => 'We have shipped and now operate our own products — Recruitment263, Shop263 and NiceJob among them. We build software we stake our own name on, and you own the result.',
             'faqs' => [
                 ['q' => 'Do you build mobile apps too?', 'a' => 'Yes — Android and iOS, built alongside the web platform and APIs so everything works together.'],
                 ['q' => 'Who owns the code you write?', 'a' => 'You do, in full. There is no lock-in, so you are free to host, extend, or move it whenever you choose.'],

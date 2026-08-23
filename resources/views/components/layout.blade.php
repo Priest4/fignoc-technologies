@@ -125,9 +125,14 @@
     <meta name="twitter:description" content="{{ $description }}">
     <meta name="twitter:image" content="{{ $ogImageUrl }}">
 
-    {{-- Icons --}}
+    {{-- Icons. Built from public/favicon.svg by tools/build-favicons.mjs, so
+         every format carries the same mark. favicon.ico was a 0-byte file. --}}
     <link rel="icon" href="{{ asset('favicon.svg') }}" type="image/svg+xml">
-    <link rel="icon" href="{{ asset('favicon.ico') }}" sizes="any">
+    <link rel="icon" href="{{ asset('favicon.ico') }}" sizes="32x32">
+    <link rel="icon" href="{{ asset('favicon-32.png') }}" type="image/png" sizes="32x32">
+    <link rel="icon" href="{{ asset('favicon-192.png') }}" type="image/png" sizes="192x192">
+    <link rel="apple-touch-icon" href="{{ asset('apple-touch-icon.png') }}" sizes="180x180">
+    <meta name="theme-color" content="#0B1F4D">
 
     {{-- Preload the self-hosted variable font (LCP text) --}}
     <link rel="preload" href="{{ asset('fonts/satoshi-variable.woff2') }}" as="font" type="font/woff2" crossorigin>

@@ -48,7 +48,8 @@
         ['label' => $service->name, 'url' => route('services.show', $service)],
     ]" />
 
-    <header class="section container-x">
+    <header class="svc-detail-head">
+        <div class="section container-x">
         <div class="spotlight">
             <div class="reveal">
                 <div class="flex items-center gap-3">
@@ -58,8 +59,8 @@
                     @endif
                 </div>
                 <h1 class="display mt-5" style="max-width: 16ch;">{{ $service->name }}</h1>
-                <p class="mt-6 text-lg leading-8" style="color: var(--color-body); max-width: 54ch;">{{ $service->description }}</p>
-                <div class="mt-8 flex flex-wrap gap-3">
+                <p class="mt-5 text-lg leading-8" style="color: var(--color-body); max-width: 54ch;">{{ $service->description }}</p>
+                <div class="mt-6 flex flex-wrap gap-3">
                     <a href="{{ route('contact') }}" class="btn btn-primary">Start a project
                         <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
                     </a>
@@ -78,11 +79,12 @@
                      style="width:100%; height:100%; object-fit: {{ $isDiagram ? 'contain' : 'cover' }}; object-position: {{ $isDiagram ? 'center' : 'top' }};">
             </div>
         </div>
+        </div>
     </header>
 
-    <div class="container-x pb-4" style="padding-top: 1rem;">
-        <div class="grid gap-12 lg:grid-cols-[1.4fr_1fr]" style="border-top: 1px solid var(--color-line-soft); padding-top: 3rem;">
-            <div class="space-y-10">
+    <div class="container-x pb-4" style="padding-top: 0.25rem;">
+        <div class="grid gap-8 lg:gap-10 lg:grid-cols-[1.4fr_1fr]" style="border-top: 1px solid var(--color-line-soft); padding-top: 1.75rem;">
+            <div class="space-y-7">
                 @if (! empty($d['what_it_is']))
                     <section class="reveal">
                         <h2 style="font-size: 1.4rem; display: flex; align-items: center; gap: 0.65rem;"><span style="width: 22px; height: 3px; border-radius: 2px; background: var(--color-accent); flex: none;"></span>What it is</h2>
