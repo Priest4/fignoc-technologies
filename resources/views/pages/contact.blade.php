@@ -6,7 +6,7 @@
 @endphp
 <x-layout
     title="Contact"
-    description="Start a project with Fignoc Technologies — message us on WhatsApp, email sales@fignoc.co.zw, or send the form. Based in Harare, Zimbabwe. We reply within one business day.">
+    description="Start a project with Fignoc. WhatsApp, email sales@fignoc.co.zw or send the form. Harare, Zimbabwe — we reply within one business day.">
 
     <x-breadcrumbs :items="[
         ['label' => 'Home', 'url' => route('home')],

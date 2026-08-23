@@ -12,9 +12,22 @@
 @php
     $brand = config('fignoc.brand');
     $siteName = $brand['name'];
-    $fullTitle = $title
-        ? $title . ' — ' . $siteName
-        : $siteName . ' — Zimbabwe software company: custom software, web & digital growth';
+    /* Google truncates the title near 60 characters. Appending
+       " — Fignoc Technologies" unconditionally cost 22 of them and pushed six
+       insight articles and the landing page past the cut. Take the fullest
+       brand suffix that still fits, and none if neither does. */
+    $brandSuffixes = [' — ' . $siteName, ' — Fignoc'];
+    $fullTitle = $siteName . ' — software and digital growth in Zimbabwe';
+
+    if ($title) {
+        $fullTitle = $title;
+        foreach ($brandSuffixes as $suffix) {
+            if (mb_strlen($title . $suffix) <= 60) {
+                $fullTitle = $title . $suffix;
+                break;
+            }
+        }
+    }
     // Prefer an explicit canonical; otherwise strip query strings from the current URL.
     // Production: set APP_URL=https://www.fignoc.co.zw so asset()/route() URLs are absolute HTTPS.
     $canonicalUrl = $canonical ?? strtok(url()->current(), '?');

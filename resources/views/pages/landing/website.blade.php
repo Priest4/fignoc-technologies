@@ -149,8 +149,8 @@
 
 <x-layout
     chrome="bare"
-    title="Fast, custom-built websites — from $80 once-off"
-    description="Custom-coded websites from $80 once-off. Search Console, Analytics, Clarity and a Google Business Profile on every build. Half now, half when you approve. Zimbabwe-wide."
+    title="Custom-built websites from $80 once-off"
+    description="Custom-coded websites from $80 once-off. Search Console, Analytics and Clarity on every build. 20% deposit, balance on approval. Zimbabwe-wide."
     :canonical="$pageUrl"
     ogImage="images/proof/seo-results.jpg">
 

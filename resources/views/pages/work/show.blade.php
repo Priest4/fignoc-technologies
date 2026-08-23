@@ -4,8 +4,10 @@
     $origin = 'https://' . ltrim(config('fignoc.brand.domain'), '/');
 @endphp
 <x-layout
-    :title="$work->name"
-    :description="$work->summary ?? $work->description"
+    {{-- "{Name} case study", not just "{Name}": /products/{slug} covers the
+         same platform, and identical titles had the two competing. --}}
+    :title="$work->name . ' case study'"
+    :description="\Illuminate\Support\Str::limit(trim(($work->summary ? $work->summary . ' ' : '') . $work->description), 152)"
     ogType="article"
     :canonical="route('work.show', $work)"
     :og-image="$work->image_path">

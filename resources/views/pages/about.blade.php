@@ -1,7 +1,7 @@
 {{-- About (brief §7.8). --}}
 <x-layout
     title="About"
-    description="Fignoc Technologies is a Harare digital product studio and growth agency — we build our own software platforms and serve clients, with a specialism no other Zimbabwean agency offers: AEO and GEO.">
+    description="A Harare product studio and growth agency. We build our own platforms and client work, with a specialism no other Zimbabwean agency offers: AEO and GEO.">
 
     <x-breadcrumbs :items="[
         ['label' => 'Home', 'url' => route('home')],
