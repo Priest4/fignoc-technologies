@@ -1,0 +1,895 @@
+/* ===========================================================================
+   Landing pages — self-contained `lp-` layer.
+   ---------------------------------------------------------------------------
+   Used by the navigation-free landing pages (currently /website-design).
+   Written against the Fignoc design tokens in app.css, with NO Tailwind
+   utilities, so the same stylesheet also drives the static review prototype
+   (landing-prototype.html) without a build step.
+
+   Direction: the Starlink standard. Dark cinematic ground, one full-height
+   chapter per idea, floating translucent header carrying the only persistent
+   CTA, headlines set large and tight over imagery, prices as oversized
+   numerals under a small tracked label. Fignoc's red spark is the single
+   accent — it appears on the primary CTA, the eyebrow rule and live dots, and
+   nowhere else.
+
+   Committed to one visual world: the page is dark everywhere and paints every
+   colour explicitly, so there is no light variant to keep in sync.
+   =========================================================================== */
+
+/* Tokens live on the body, not on .lp: the header and footer are siblings of
+   the page wrapper, so anything scoped to .lp would leave them unstyled. */
+body.is-bare {
+  /* Bare chrome: no floating pill header from the main site to clear. */
+  padding-top: 0;
+
+  --lp-maxw: 1240px;
+  --lp-gutter: clamp(1.15rem, 4vw, 3.5rem);
+
+  /* ── Fignoc palette, darkened ─────────────────────────────────────────
+     Every value below is mixed from the brand tokens in app.css, not picked
+     by eye: the ground is Fignoc navy (--color-ink #0B1F4D) taken down toward
+     black, the panels are that same navy at full strength and lifted toward
+     brand blue (--color-navy #002E9A), and the text tints come off the brand
+     tint (--color-brand-tint #EAF0FB). Change a brand token and this page
+     follows it. */
+  --lp-black:   color-mix(in srgb, var(--color-ink) 62%, #000);
+  --lp-deep:    color-mix(in srgb, var(--color-ink) 78%, #000);
+  --lp-panel:   var(--color-ink);
+  --lp-panel-2: color-mix(in srgb, var(--color-ink) 76%, var(--color-navy));
+
+  --lp-ink:   #FFFFFF;
+  --lp-body:  color-mix(in srgb, var(--color-brand-tint) 84%, var(--color-navy));
+  --lp-muted: color-mix(in srgb, var(--color-brand-tint) 62%, var(--color-navy-sky));
+
+  /* Hairlines pick up the brand tint rather than neutral white, so rules read
+     as part of the navy world instead of sitting on top of it. */
+  --lp-hair:   color-mix(in srgb, var(--color-brand-tint) 16%, transparent);
+  --lp-hair-2: color-mix(in srgb, var(--color-brand-tint) 30%, transparent);
+
+  /* The red spark, straight from the logo. */
+  --lp-accent: var(--color-accent);
+  --lp-accent-deep: var(--color-accent-deep);
+
+  --lp-rad: 12px;
+
+  background: var(--lp-black);
+  color: var(--lp-body);
+}
+
+/* The header CTA is fixed and always reachable, so the sitewide green
+   WhatsApp bubble would be a third redundant button. */
+body.is-bare .wa-float { display: none; }
+body.is-bare ::selection { background: var(--color-accent); color: #fff; }
+
+.lp { background: var(--lp-black); color: var(--lp-body); }
+
+/* Images arrive through <x-lp-img>, which wraps them in <picture>. The wrapper
+   must not become a layout box, and height:auto is set explicitly rather than
+   inherited from Tailwind preflight — without it the height attribute is taken
+   literally and the screenshot renders squashed. */
+.lp picture { display: block; }
+.lp picture, .lp img { max-width: 100%; }
+.lp img { height: auto; }
+
+/* ═══ Floating header ═══════════════════════════════════════════════════ */
+.lp-head {
+  position: fixed; z-index: 60;
+  top: clamp(0.5rem, 1.4vw, 0.9rem);
+  left: clamp(0.5rem, 1.6vw, 1.25rem);
+  right: clamp(0.5rem, 1.6vw, 1.25rem);
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--color-ink) 62%, transparent);
+  -webkit-backdrop-filter: blur(16px) saturate(1.4);
+  backdrop-filter: blur(16px) saturate(1.4);
+  border: 1px solid var(--lp-hair);
+}
+.lp-head-bar {
+  max-width: var(--lp-maxw); margin-inline: auto;
+  padding: 0.5rem clamp(0.75rem, 2vw, 1.35rem);
+  display: flex; align-items: center; gap: 0.6rem;
+}
+.lp-mark {
+  display: inline-flex; align-items: center; min-height: 44px;
+  margin-right: auto; text-decoration: none;
+  font-size: clamp(1.2rem, 3.2vw, 1.6rem); font-weight: 600;
+  /* Tracking tightens as the size grows — 0.3em at 1.6rem would run the
+     wordmark into the CTA on a narrow header. */
+  letter-spacing: clamp(0.16em, 0.5vw, 0.26em); text-transform: uppercase;
+  color: var(--lp-ink);
+}
+.lp-mark b { color: var(--lp-accent); font-weight: 500; }
+.lp-burger {
+  width: 44px; height: 44px; flex: none; order: 3; padding: 0;
+  display: grid; place-items: center; cursor: pointer;
+  background: transparent; color: var(--lp-ink);
+  border: 1px solid var(--lp-hair-2); border-radius: 10px;
+  transition: border-color .18s ease, background-color .18s ease;
+}
+.lp-burger:hover { border-color: color-mix(in srgb, var(--color-brand-tint) 50%, transparent); background: color-mix(in srgb, var(--color-brand-tint) 8%, transparent); }
+.lp-burger-box { position: relative; width: 17px; height: 11px; }
+.lp-burger-box i {
+  position: absolute; left: 0; width: 100%; height: 1.5px; border-radius: 2px;
+  background: currentColor; transition: transform .22s ease, opacity .18s ease;
+}
+.lp-burger-box i:nth-child(1) { top: 0; }
+.lp-burger-box i:nth-child(2) { top: 4.75px; }
+.lp-burger-box i:nth-child(3) { top: 9.5px; }
+.lp-burger[aria-expanded="true"] .lp-burger-box i:nth-child(1) { transform: translateY(4.75px) rotate(45deg); }
+.lp-burger[aria-expanded="true"] .lp-burger-box i:nth-child(2) { opacity: 0; }
+.lp-burger[aria-expanded="true"] .lp-burger-box i:nth-child(3) { transform: translateY(-4.75px) rotate(-45deg); }
+
+.lp-menu { display: none; border-top: 1px solid var(--lp-hair); }
+.lp-menu[data-open="true"] { display: block; }
+.lp-menu-in {
+  max-width: var(--lp-maxw); margin-inline: auto;
+  padding: 1rem clamp(0.75rem, 2vw, 1.35rem) 1.25rem;
+  display: grid; gap: 1.25rem;
+}
+.lp-menu-lab {
+  font-size: 0.66rem; font-weight: 600; letter-spacing: 0.18em;
+  text-transform: uppercase; color: var(--lp-muted); margin: 0;
+}
+.lp-menu-links { display: grid; }
+.lp-menu-links a {
+  display: flex; align-items: center; justify-content: space-between; gap: 0.75rem;
+  min-height: 46px; padding: 0.4rem 0.1rem; text-decoration: none;
+  font-size: 1rem; font-weight: 600; color: var(--lp-ink);
+  border-bottom: 1px solid var(--lp-hair);
+  transition: color .16s ease, padding-left .16s ease;
+}
+.lp-menu-links a:hover { color: var(--lp-accent); padding-left: 0.35rem; }
+.lp-menu-links a small { font-weight: 400; font-size: 0.78rem; color: var(--lp-muted); }
+.lp-menu-foot { font-size: 0.86rem; color: var(--lp-muted); line-height: 1.7; }
+.lp-menu-foot a { color: var(--lp-ink); font-weight: 600; text-decoration: none; }
+.lp-menu-foot a:hover { color: var(--lp-accent); }
+
+@media (min-width: 860px) {
+  .lp-menu-in { grid-template-columns: 1.6fr 1fr; gap: 3rem; align-items: start; }
+  .lp-menu-links { grid-template-columns: repeat(2, 1fr); gap: 0 2.5rem; }
+}
+
+/* ═══ Buttons ═══════════════════════════════════════════════════════════ */
+.lp-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
+  font-family: inherit; font-weight: 600; font-size: 0.9rem; line-height: 1;
+  min-height: 46px; padding: 0.85rem 1.5rem;
+  border: 1px solid transparent; border-radius: 6px;
+  text-decoration: none; cursor: pointer; white-space: nowrap;
+  transition: background-color .18s ease, border-color .18s ease, color .18s ease, transform .18s ease;
+}
+.lp-btn svg { width: 16px; height: 16px; flex: none; }
+/* Primary: the Fignoc red spark. The only saturated element on the page. */
+.lp-btn--primary { background: var(--lp-accent); color: #fff; }
+.lp-btn--primary:hover { background: var(--lp-accent-deep); color: #fff; }
+/* Secondary: Starlink's translucent grey. */
+.lp-btn--quiet {
+  background: color-mix(in srgb, var(--color-brand-tint) 16%, transparent); color: var(--lp-ink);
+  -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+}
+.lp-btn--quiet:hover { background: color-mix(in srgb, var(--color-brand-tint) 27%, transparent); }
+.lp-btn--light { background: var(--color-brand-tint); color: var(--color-ink); }
+.lp-btn--light:hover { background: #fff; color: var(--color-ink); }
+.lp-btn--sm { min-height: 40px; padding: 0.62rem 1.1rem; font-size: 0.83rem; }
+.lp-btn:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+.lp-cta-row { display: flex; flex-wrap: wrap; gap: 0.6rem; }
+
+/* ═══ Chapter scaffold ══════════════════════════════════════════════════ */
+.lp-wrap { max-width: var(--lp-maxw); margin-inline: auto; padding-inline: var(--lp-gutter); width: 100%; }
+
+/* A chapter is one idea, one screen. Photography sits behind a scrim; content
+   sits in the left half on desktop and full width on a phone. */
+.lp-ch {
+  position: relative; overflow: hidden;
+  min-height: 100svh;
+  display: grid; align-items: center;
+  padding-block: clamp(6.5rem, 14vh, 9rem) clamp(3rem, 8vh, 5rem);
+  background: var(--lp-black);
+  isolation: isolate;
+}
+.lp-ch--short { min-height: auto; padding-block: clamp(2.4rem, 4.6vw, 3.9rem); }
+.lp-ch--mid { min-height: 62svh; }
+
+.lp-ch-bg { position: absolute; inset: 0; z-index: -2; }
+.lp-ch-bg picture, .lp-ch-bg img { width: 100%; height: 100%; }
+.lp-ch-bg img { object-fit: cover; object-position: center; }
+/* Scrim: heavy on the content side, light on the image side, and always dark
+   enough at the bottom that the next chapter's edge disappears. */
+.lp-ch-scrim {
+  position: absolute; inset: 0; z-index: -1;
+  background:
+    linear-gradient(100deg,
+      color-mix(in srgb, var(--lp-black) 95%, transparent) 0%,
+      color-mix(in srgb, var(--lp-black) 88%, transparent) 34%,
+      color-mix(in srgb, var(--lp-black) 40%, transparent) 68%,
+      color-mix(in srgb, var(--lp-black) 58%, transparent) 100%),
+    linear-gradient(180deg,
+      color-mix(in srgb, var(--lp-black) 68%, transparent) 0%,
+      transparent 26%, transparent 68%, var(--lp-black) 100%);
+}
+@media (max-width: 767px) {
+  /* No room for a left/right split on a phone: darken evenly so the type holds. */
+  .lp-ch-scrim {
+    background:
+      linear-gradient(180deg,
+        color-mix(in srgb, var(--lp-black) 84%, transparent) 0%,
+        color-mix(in srgb, var(--lp-black) 74%, transparent) 42%,
+        color-mix(in srgb, var(--lp-black) 94%, transparent) 100%);
+  }
+}
+
+.lp-ch-copy { max-width: 34rem; display: grid; gap: 0.95rem; justify-items: start; }
+.lp-ch--wide .lp-ch-copy { max-width: 46rem; }
+.lp-ch--center { text-align: center; justify-items: center; }
+.lp-ch--center .lp-ch-copy { max-width: 44rem; margin-inline: auto; justify-items: center; }
+.lp-ch--center .lp-cta-row { justify-content: center; }
+
+/* ═══ Type ══════════════════════════════════════════════════════════════ */
+.lp-eyebrow {
+  display: inline-flex; align-items: center; gap: 0.6rem;
+  font-size: 0.68rem; font-weight: 600; letter-spacing: 0.2em;
+  text-transform: uppercase; color: var(--lp-muted); margin: 0;
+}
+.lp-eyebrow::before { content: ''; width: 22px; height: 1.5px; background: var(--lp-accent); flex: none; }
+
+.lp-h1 {
+  margin: 0; color: var(--lp-ink);
+  font-size: clamp(2.35rem, 6.4vw, 4.4rem);
+  line-height: 1.02; letter-spacing: -0.035em; font-weight: 700;
+  text-wrap: balance;
+}
+.lp-h2 {
+  margin: 0; color: var(--lp-ink);
+  font-size: clamp(1.95rem, 4.8vw, 3.3rem);
+  line-height: 1.05; letter-spacing: -0.032em; font-weight: 700;
+  text-wrap: balance;
+}
+.lp-h3 {
+  margin: 0; color: var(--lp-ink);
+  font-size: 1.08rem; line-height: 1.3; letter-spacing: -0.015em; font-weight: 700;
+}
+.lp-lede {
+  margin: 0; color: var(--lp-body);
+  font-size: clamp(1rem, 1.45vw, 1.15rem); line-height: 1.62;
+  max-width: 34rem;
+}
+.lp-note { margin: 0; font-size: 0.88rem; line-height: 1.6; color: var(--lp-muted); }
+.lp-copy p { margin: 0; }
+.lp-copy p + p { margin-top: 0.9rem; }
+.lp-strong { color: var(--lp-ink); font-weight: 600; }
+
+/* Starlink's price block: small tracked label, oversized numeral, tiny unit. */
+.lp-price { display: grid; gap: 0.35rem; }
+.lp-price-lab {
+  font-size: 0.66rem; font-weight: 600; letter-spacing: 0.18em;
+  text-transform: uppercase; color: var(--lp-muted);
+}
+.lp-price-row { display: flex; align-items: baseline; gap: 0.15rem; }
+.lp-price-num {
+  font-size: clamp(2.9rem, 7vw, 4.1rem); font-weight: 700;
+  letter-spacing: -0.05em; line-height: 0.95; color: var(--lp-ink);
+  font-variant-numeric: tabular-nums;
+}
+.lp-price-unit { font-size: 1rem; font-weight: 500; color: var(--lp-body); }
+
+.lp-trust { display: flex; flex-wrap: wrap; gap: 0.35rem 1.35rem; font-size: 0.82rem; color: var(--lp-muted); }
+.lp-trust span { display: inline-flex; align-items: center; gap: 0.5rem; }
+.lp-trust span::before { content: ''; width: 4px; height: 4px; border-radius: 999px; background: var(--lp-accent); flex: none; }
+
+/* ═══ Hero ══════════════════════════════════════════════════════════════ */
+.lp-hero {
+  min-height: 100svh;
+  background:
+    radial-gradient(120% 105% at 76% 8%,
+      color-mix(in srgb, var(--color-navy) 52%, var(--lp-black)) 0%,
+      color-mix(in srgb, var(--color-ink) 72%, var(--lp-black)) 38%,
+      var(--lp-black) 76%);
+}
+.lp-hero-grid {
+  display: grid; gap: clamp(2rem, 5vw, 3.5rem); align-items: center; width: 100%;
+}
+.lp-hero-visual { width: 100%; min-width: 0; }
+
+/* Contained screenshot presented like a product shot. */
+.lp-frame {
+  border-radius: var(--lp-rad); overflow: hidden;
+  background: #fff;
+  border: 1px solid var(--lp-hair-2);
+  box-shadow: 0 50px 110px -40px color-mix(in srgb, var(--color-ink) 90%, #000);
+}
+.lp-frame-bar {
+  display: flex; align-items: center; gap: 0.4rem;
+  padding: 0.55rem 0.85rem; background: var(--color-brand-tint);
+  border-bottom: 1px solid color-mix(in srgb, var(--color-navy) 14%, var(--color-brand-tint));
+}
+.lp-frame-bar i { width: 8px; height: 8px; border-radius: 999px; background: color-mix(in srgb, var(--color-navy) 26%, var(--color-brand-tint)); flex: none; }
+.lp-frame-url {
+  font-size: 0.75rem; color: var(--color-body); margin-left: 0.4rem;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.lp-frame-live {
+  margin-left: auto; flex: none;
+  display: inline-flex; align-items: center; gap: 0.35rem;
+  font-size: 0.64rem; font-weight: 700; letter-spacing: 0.1em;
+  text-transform: uppercase; color: #157347;
+}
+.lp-frame-live::before { content: ''; width: 6px; height: 6px; border-radius: 999px; background: #22C55E; }
+
+/* ═══ Etched line texture ═══════════════════════════════════════════════
+   Fine hairlines — sweeping arcs crossed by a tight diagonal hatch — faded out
+   at the edges by a mask so they read as one large engraved form rather than a
+   tiling pattern. Pure CSS: no image, no request, no bytes. Add the class to a
+   chapter that needs surface without competing with the content; used
+   sparingly (pricing, guarantee, plan) so it stays an accent. */
+.lp-ch--etched::before {
+  content: '';
+  position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  background-image:
+    repeating-radial-gradient(circle at 50% 132%,
+      transparent 0 13px,
+      color-mix(in srgb, var(--color-brand-tint) 13%, transparent) 13px 14px),
+    repeating-linear-gradient(116deg,
+      color-mix(in srgb, var(--color-brand-tint) 7%, transparent) 0 1px,
+      transparent 1px 10px);
+  -webkit-mask-image: radial-gradient(125% 96% at 50% 42%,
+    #000 0%, rgba(0, 0, 0, 0.6) 44%, transparent 80%);
+  mask-image: radial-gradient(125% 96% at 50% 42%,
+    #000 0%, rgba(0, 0, 0, 0.6) 44%, transparent 80%);
+}
+/* The arcs read as noise at phone width, so drop to the hatch alone. */
+@media (max-width: 640px) {
+  .lp-ch--etched::before {
+    background-image:
+      repeating-linear-gradient(116deg,
+        color-mix(in srgb, var(--color-brand-tint) 7%, transparent) 0 1px,
+        transparent 1px 10px);
+  }
+}
+
+/* ═══ Device mockups — a real site on a real screen ═════════════════════ */
+.lp-devices { width: 100%; }
+/* The overhanging frames anchor to the stage, which ends where the laptop ends.
+   Anchoring them to .lp-devices put them on top of the caption. */
+.lp-device-stage { position: relative; width: 100%; padding-bottom: 4.25rem; }
+
+.lp-laptop { position: relative; width: 100%; }
+.lp-laptop-lid {
+  padding: 9px 9px 0;
+  border-radius: 14px 14px 3px 3px;
+  background: linear-gradient(180deg,
+    color-mix(in srgb, var(--color-ink) 70%, #000),
+    color-mix(in srgb, var(--color-ink) 92%, #000));
+  border: 1px solid var(--lp-hair-2);
+  box-shadow: 0 46px 90px -34px color-mix(in srgb, var(--color-ink) 92%, #000);
+}
+.lp-laptop-screen {
+  aspect-ratio: 16 / 10; overflow: hidden; border-radius: 5px;
+  background: var(--lp-panel);
+}
+.lp-laptop-screen picture { width: 100%; height: 100%; }
+.lp-laptop-screen img {
+  width: 100%; height: 100%; object-fit: cover; object-position: top center;
+}
+/* Hinge and base: the sliver of aluminium that makes the lid read as a lid. */
+.lp-laptop-base {
+  height: 11px; margin-inline: -3.5%;
+  border-radius: 0 0 10px 10px;
+  background: linear-gradient(180deg,
+    color-mix(in srgb, var(--color-brand-tint) 24%, var(--color-ink)),
+    color-mix(in srgb, var(--color-ink) 88%, #000));
+  box-shadow: 0 16px 26px -14px color-mix(in srgb, var(--color-ink) 90%, #000);
+}
+.lp-laptop-base::after {
+  content: ''; display: block; width: 14%; height: 3px; margin: 0 auto;
+  border-radius: 0 0 4px 4px;
+  background: color-mix(in srgb, var(--color-ink) 80%, #000);
+}
+
+/* Both phones sit in one row pinned across the laptop's foot, so they can
+   never land on top of each other or drift over the screen content. */
+.lp-phones {
+  position: absolute; left: 0; right: 0; bottom: 0; z-index: 2;
+  display: flex; justify-content: space-between; align-items: flex-end;
+}
+.lp-phone {
+  width: 21%; min-width: 88px; max-width: 168px;
+  padding: 5px; border-radius: 18px;
+  background: linear-gradient(155deg,
+    color-mix(in srgb, var(--color-brand-tint) 22%, var(--color-ink)),
+    color-mix(in srgb, var(--color-ink) 94%, #000));
+  border: 1px solid var(--lp-hair-2);
+  box-shadow: 0 30px 60px -22px color-mix(in srgb, var(--color-ink) 94%, #000);
+}
+.lp-phone-screen {
+  position: relative; overflow: hidden; border-radius: 14px;
+  /* Matches the 390x844 capture exactly, so nothing is cropped. */
+  aspect-ratio: 390 / 844;
+  background: var(--lp-panel);
+}
+.lp-phone-screen picture { width: 100%; height: 100%; }
+.lp-phone-screen img {
+  width: 100%; height: 100%; object-fit: cover; object-position: top center;
+}
+/* Speaker slot, so the frame reads as a phone at thumbnail size. */
+.lp-phone-screen::before {
+  content: ''; position: absolute; z-index: 2; top: 5px; left: 50%;
+  transform: translateX(-50%); width: 28%; height: 3px; border-radius: 2px;
+  background: color-mix(in srgb, var(--color-ink) 82%, #000);
+}
+.lp-device-cap {
+  display: flex; align-items: center; gap: 0.45rem;
+  margin-top: 1rem; font-size: 0.75rem; line-height: 1.4; color: var(--lp-muted);
+}
+.lp-device-cap::before {
+  content: ''; width: 6px; height: 6px; border-radius: 999px; background: #22C55E; flex: none;
+}
+/* Three frames on a phone screen are unreadable at any size, so the tablet
+   steps out and the phone takes the room it leaves. */
+@media (max-width: 400px) {
+  .lp-phone { max-width: 124px; }
+}
+
+/* ═══ Split chapter — copy one side, a real image the other ═════════════ */
+.lp-ch--split { min-height: auto; padding-block: clamp(2.4rem, 5vw, 4.2rem); }
+.lp-ch--split .lp-wrap {
+  display: grid; gap: clamp(1.75rem, 4vw, 3.5rem); align-items: center;
+}
+.lp-ch-media {
+  border-radius: var(--lp-rad); overflow: hidden; min-width: 0;
+  border: 1px solid var(--lp-hair);
+  box-shadow: 0 34px 70px -34px color-mix(in srgb, var(--color-ink) 88%, #000);
+}
+.lp-ch-media picture { width: 100%; }
+.lp-ch-media img { width: 100%; aspect-ratio: 16 / 10; object-fit: cover; }
+@media (min-width: 900px) {
+  .lp-ch--split .lp-wrap { grid-template-columns: 1fr 1fr; }
+  /* Alternate which side the image sits on so the page has a rhythm rather
+     than five identical rows. */
+  .lp-ch--split.is-flip .lp-ch-media { order: -1; }
+  .lp-ch--split .lp-ch-copy { max-width: 30rem; }
+}
+
+/* ═══ Scoreboard figures ════════════════════════════════════════════════ */
+.lp-figs {
+  display: grid; gap: 1px;
+  background: var(--lp-hair);
+  border-block: 1px solid var(--lp-hair);
+}
+.lp-fig {
+  background: var(--lp-black);
+  padding: 1.4rem clamp(1rem, 2.5vw, 1.75rem);
+  display: grid; gap: 0.35rem; align-content: start;
+}
+.lp-fig-v {
+  font-size: clamp(1.9rem, 4.2vw, 2.6rem); font-weight: 700;
+  letter-spacing: -0.045em; line-height: 1; color: var(--lp-ink);
+  font-variant-numeric: tabular-nums;
+}
+.lp-fig-l { font-size: 0.82rem; line-height: 1.45; color: var(--lp-muted); }
+
+
+
+/* ═══ Client reviews ════════════════════════════════════════════════════ */
+.lp-reviews { display: grid; gap: 1rem; }
+.lp-review {
+  display: grid; gap: 0.85rem; align-content: start;
+  padding: clamp(1.15rem, 2.4vw, 1.6rem);
+  border: 1px solid var(--lp-hair); border-radius: var(--lp-rad);
+  background: var(--lp-panel);
+}
+.lp-review-chip {
+  justify-self: start;
+  font-size: 0.62rem; font-weight: 700; letter-spacing: 0.14em;
+  text-transform: uppercase; color: var(--lp-accent);
+  padding: 0.3rem 0.6rem; border-radius: 4px;
+  background: color-mix(in srgb, var(--lp-accent) 13%, transparent);
+}
+.lp-review-quote {
+  margin: 0; font-size: 1rem; line-height: 1.6; color: var(--lp-ink);
+  text-wrap: pretty;
+}
+/* Hanging quote mark, so the card reads as speech without an icon. */
+.lp-review-quote::before {
+  content: '\201C'; color: var(--lp-accent);
+  font-size: 1.6em; line-height: 0; vertical-align: -0.28em; margin-right: 0.1em;
+}
+.lp-review-by { margin: 0; font-size: 0.83rem; line-height: 1.5; color: var(--lp-muted); }
+.lp-review-by b { display: block; color: var(--lp-ink); font-weight: 600; }
+
+/* Unfilled slot: obviously a slot, never mistakable for a real review. */
+.lp-review--empty {
+  background: transparent;
+  border-style: dashed; border-color: var(--lp-hair-2);
+}
+.lp-review--empty .lp-review-chip {
+  color: var(--lp-muted); background: color-mix(in srgb, var(--color-brand-tint) 9%, transparent);
+}
+.lp-review-todo { margin: 0; font-size: 0.88rem; line-height: 1.6; color: var(--lp-body); }
+.lp-review-todo b { color: var(--lp-ink); }
+.lp-review-hint { margin: 0; font-size: 0.78rem; line-height: 1.5; color: var(--lp-muted); }
+
+/* Sample copy in place of a real quote. Marked, not hidden: the layout is
+   reviewable and the card still says plainly that it is not a real review. */
+.lp-review-sample {
+  font-weight: 700; letter-spacing: 0.1em;
+  color: var(--lp-accent);
+}
+.lp-review--sample .lp-review-chip {
+  color: var(--lp-muted); background: color-mix(in srgb, var(--color-brand-tint) 10%, transparent);
+}
+
+@media (min-width: 900px) {
+  .lp-reviews { grid-template-columns: repeat(3, 1fr); }
+}
+
+/* ═══ Carousel of live platforms ════════════════════════════════════════ */
+.lp-rail {
+  display: flex; gap: clamp(0.75rem, 1.6vw, 1.35rem);
+  overflow-x: auto; scroll-snap-type: x mandatory;
+  padding-block: 0.25rem 1.5rem;
+  scrollbar-width: none; -webkit-overflow-scrolling: touch;
+  /* Bleed to the viewport edge, Starlink-style, but keep the first card aligned
+     to the text column above it. */
+  margin-inline: calc(var(--lp-gutter) * -1);
+  padding-inline: var(--lp-gutter);
+  scroll-padding-inline-start: var(--lp-gutter);
+}
+.lp-rail::-webkit-scrollbar { display: none; }
+.lp-card {
+  flex: 0 0 clamp(258px, 74vw, 560px); scroll-snap-align: start;
+  display: grid; gap: 0.9rem; align-content: start;
+  text-decoration: none; color: inherit;
+}
+.lp-card-shot {
+  aspect-ratio: 16 / 10; overflow: hidden; border-radius: var(--lp-rad);
+  background: var(--lp-panel); border: 1px solid var(--lp-hair);
+}
+.lp-card-shot picture { width: 100%; height: 100%; }
+.lp-card-shot img {
+  width: 100%; height: 100%; object-fit: cover; object-position: top center;
+  transition: transform .5s cubic-bezier(.22,.61,.36,1);
+}
+.lp-card:hover .lp-card-shot img { transform: scale(1.035); }
+.lp-card-pending {
+  width: 100%; height: 100%; display: grid; place-content: center; text-align: center;
+  gap: 0.35rem; padding: 1rem;
+  background:
+    repeating-linear-gradient(135deg, color-mix(in srgb, var(--color-brand-tint) 4%, transparent) 0 12px, color-mix(in srgb, var(--color-brand-tint) 8%, transparent) 12px 24px);
+}
+.lp-card-pending b { font-size: 0.66rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--lp-muted); }
+.lp-card-pending small { font-size: 0.72rem; color: var(--lp-muted); word-break: break-all; }
+/* Starlink's caption style: bold lead sentence, rest in body grey. */
+.lp-card-cap { font-size: 0.95rem; line-height: 1.55; color: var(--lp-body); margin: 0; }
+.lp-card-cap b { color: var(--lp-ink); font-weight: 700; }
+.lp-card-url {
+  display: inline-flex; align-items: center; gap: 0.35rem;
+  font-size: 0.78rem; font-weight: 600; color: var(--lp-accent);
+  overflow-wrap: anywhere;
+}
+.lp-card-url svg { width: 12px; height: 12px; flex: none; }
+.lp-card:hover .lp-card-url { color: color-mix(in srgb, var(--color-accent) 70%, #fff); }
+
+.lp-rail-nav { display: flex; justify-content: center; gap: 0.6rem; }
+.lp-rail-btn {
+  width: 44px; height: 44px; border-radius: 999px; cursor: pointer;
+  display: grid; place-items: center; padding: 0;
+  background: transparent; color: var(--lp-ink);
+  border: 1px solid var(--lp-hair-2);
+  transition: background-color .18s ease, border-color .18s ease, opacity .18s ease;
+}
+.lp-rail-btn:hover { background: color-mix(in srgb, var(--color-brand-tint) 12%, transparent); border-color: color-mix(in srgb, var(--color-brand-tint) 55%, transparent); }
+.lp-rail-btn svg { width: 17px; height: 17px; }
+.lp-rail-btn[disabled] { opacity: 0.3; cursor: default; }
+
+/* ═══ Compact feature grid ══════════════════════════════════════════════ */
+.lp-grid { display: grid; gap: 1px; background: var(--lp-hair); border: 1px solid var(--lp-hair); border-radius: var(--lp-rad); overflow: hidden; }
+.lp-cell {
+  background: var(--lp-deep); padding: clamp(1.35rem, 2.6vw, 1.9rem);
+  display: grid; gap: 0.6rem; align-content: start;
+}
+.lp-cell-n { font-size: 0.64rem; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--lp-accent); }
+.lp-cell p { margin: 0; font-size: 0.91rem; line-height: 1.6; color: var(--lp-body); }
+.lp-cell--wide { grid-column: 1 / -1; }
+.lp-cell-shot { margin-top: 0.5rem; border-radius: 8px; overflow: hidden; border: 1px solid var(--lp-hair); }
+
+/* ═══ Guarantee ═════════════════════════════════════════════════════════ */
+.lp-guar {
+  border: 1px solid color-mix(in srgb, var(--color-accent) 42%, transparent);
+  border-left: 3px solid var(--lp-accent);
+  border-radius: var(--lp-rad);
+  background: linear-gradient(180deg, color-mix(in srgb, var(--color-accent) 11%, transparent), color-mix(in srgb, var(--color-accent) 4%, transparent));
+  padding: clamp(1.35rem, 3vw, 2.25rem);
+  display: grid; gap: 1.35rem;
+}
+.lp-guar-list { display: grid; gap: 1rem; }
+.lp-guar-item { display: grid; grid-template-columns: auto 1fr; gap: 1rem; align-items: start; }
+.lp-guar-n {
+  width: 30px; height: 30px; flex: none; border-radius: 999px;
+  display: grid; place-items: center;
+  background: var(--lp-accent); color: #fff; font-weight: 700; font-size: 0.85rem;
+}
+.lp-guar-item p { margin: 0.3rem 0 0; font-size: 0.91rem; line-height: 1.6; color: var(--lp-body); }
+.lp-guar-close {
+  margin: 0; padding-top: 1rem; border-top: 1px solid color-mix(in srgb, var(--color-accent) 26%, transparent);
+  font-size: 0.9rem; line-height: 1.65; color: var(--lp-body);
+}
+
+.lp-ch-cta {
+  display: flex; flex-wrap: wrap; gap: 0.6rem; align-items: center;
+  margin-top: 1.5rem; padding-top: 1.35rem;
+  border-top: 1px solid var(--lp-hair);
+}
+.lp-ch-cta p { margin: 0; font-size: 0.85rem; color: var(--lp-muted); }
+
+/* ═══ Pricing — price at the card foot, Starlink-style ══════════════════ */
+.lp-anchor {
+  margin: 0; border-left: 2px solid var(--lp-accent); padding-left: 1.1rem;
+  font-size: 0.93rem; line-height: 1.65; max-width: 64ch; color: var(--lp-body);
+}
+.lp-tiers { display: grid; gap: 1rem; align-items: stretch; }
+.lp-tier {
+  position: relative; display: grid; gap: 1rem; align-content: start;
+  padding: clamp(1.35rem, 2.6vw, 1.85rem);
+  border: 1px solid var(--lp-hair); border-radius: var(--lp-rad);
+  background: var(--lp-panel);
+}
+.lp-tier--hot { border-color: color-mix(in srgb, var(--color-accent) 58%, transparent); background: var(--lp-panel-2); }
+.lp-tier-badge {
+  position: absolute; top: -0.7rem; left: clamp(1.35rem, 2.6vw, 1.85rem);
+  background: var(--lp-accent); color: #fff; border-radius: 4px;
+  font-size: 0.6rem; font-weight: 700; letter-spacing: 0.14em;
+  text-transform: uppercase; padding: 0.3rem 0.6rem;
+}
+.lp-tier-name { margin: 0; font-size: 1.3rem; font-weight: 700; color: var(--lp-ink); letter-spacing: -0.02em; }
+.lp-tier-tag { margin: -0.5rem 0 0; font-size: 0.9rem; line-height: 1.5; color: var(--lp-muted); }
+
+/* Offer framing: the list price sits above the offer price, struck through, so
+   the drop is read as a saving rather than just a number. */
+.lp-was {
+  display: flex; align-items: baseline; gap: 0.5rem; flex-wrap: wrap;
+  font-size: 0.85rem; color: var(--lp-muted);
+}
+.lp-was s { text-decoration-thickness: 1px; text-decoration-color: var(--lp-accent); }
+.lp-save {
+  font-size: 0.62rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+  color: #fff; background: var(--lp-accent);
+  padding: 0.22rem 0.45rem; border-radius: 3px;
+}
+.lp-offer-band {
+  display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.5rem 0.85rem;
+  margin-top: 1rem; padding: 0.7rem 0.95rem;
+  border: 1px solid color-mix(in srgb, var(--lp-accent) 40%, transparent);
+  border-left: 3px solid var(--lp-accent);
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--lp-accent) 10%, transparent);
+}
+.lp-offer-band b { color: var(--lp-ink); font-size: 0.9rem; font-weight: 700; }
+.lp-offer-band span { font-size: 0.85rem; color: var(--lp-body); }
+.lp-offer-band time { color: var(--lp-ink); font-weight: 600; white-space: nowrap; }
+.lp-tier ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 0.5rem; }
+.lp-tier li {
+  display: grid; grid-template-columns: auto 1fr; gap: 0.6rem;
+  font-size: 0.89rem; line-height: 1.5; color: var(--lp-body);
+}
+.lp-tier li svg { width: 14px; height: 14px; margin-top: 0.28rem; color: var(--lp-accent); flex: none; }
+.lp-tier li b { color: var(--lp-ink); font-weight: 700; }
+.lp-tier-note {
+  margin: 0; font-size: 0.85rem; line-height: 1.55; color: var(--lp-ink);
+  background: color-mix(in srgb, var(--color-accent) 13%, transparent); border-radius: 8px; padding: 0.7rem 0.85rem;
+}
+/* Price and CTA pinned to the foot so the three cards line up. */
+.lp-tier-foot { margin-top: auto; display: grid; gap: 0.9rem; padding-top: 0.35rem; }
+.lp-tier-foot .lp-price-num { font-size: clamp(2.4rem, 5vw, 3rem); }
+.lp-tiers-foot { margin: 0; font-size: 0.92rem; line-height: 1.65; color: var(--lp-body); }
+
+/* ═══ Insight plan ══════════════════════════════════════════════════════ */
+.lp-plan {
+  border: 1px solid var(--lp-hair); border-radius: var(--lp-rad);
+  background: var(--lp-panel); padding: clamp(1.35rem, 3vw, 2rem);
+  display: grid; gap: 1.25rem;
+}
+.lp-plan-head { display: flex; flex-wrap: wrap; gap: 1rem 2rem; align-items: end; justify-content: space-between; }
+.lp-plan-cols { display: grid; gap: 1.35rem; }
+.lp-plan-col h4 {
+  margin: 0 0 0.7rem; font-size: 0.64rem; font-weight: 700;
+  letter-spacing: 0.18em; text-transform: uppercase; color: var(--lp-accent);
+}
+.lp-plan-col ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 0.45rem; }
+.lp-plan-col li { position: relative; padding-left: 0.95rem; font-size: 0.88rem; line-height: 1.5; color: var(--lp-body); }
+.lp-plan-col li::before {
+  content: ''; position: absolute; left: 0; top: 0.62em;
+  width: 4px; height: 4px; border-radius: 999px; background: var(--lp-accent);
+}
+
+/* ═══ FAQ ═══════════════════════════════════════════════════════════════ */
+.lp-faq { border-top: 1px solid var(--lp-hair); }
+.lp-faq details { border-bottom: 1px solid var(--lp-hair); }
+.lp-faq summary {
+  position: relative; list-style: none; cursor: pointer;
+  min-height: 46px; padding: 1.1rem 2.75rem 1.1rem 0;
+  font-size: 1rem; font-weight: 600; color: var(--lp-ink);
+}
+.lp-faq summary::-webkit-details-marker { display: none; }
+.lp-faq summary::after {
+  content: ''; position: absolute; right: 0.45rem; top: 50%;
+  width: 11px; height: 11px; margin-top: -6px;
+  border-right: 1.5px solid var(--lp-accent); border-bottom: 1.5px solid var(--lp-accent);
+  transform: rotate(45deg); transition: transform .2s ease;
+}
+.lp-faq details[open] summary::after { transform: rotate(-135deg); margin-top: -2px; }
+.lp-faq-a { padding: 0 2.75rem 1.3rem 0; max-width: 66ch; font-size: 0.92rem; line-height: 1.68; color: var(--lp-body); }
+
+/* ═══ Get-started dialog ════════════════════════════════════════════════ */
+.lp-modal {
+  border: 0; padding: 0; margin: auto;
+  width: min(100% - 1.5rem, 44rem); max-height: min(92svh, 46rem);
+  background: transparent; color: var(--lp-body); overflow: visible;
+}
+.lp-modal::backdrop {
+  background: color-mix(in srgb, var(--color-ink) 78%, #000);
+  -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px);
+}
+.lp-modal-card {
+  display: flex; flex-direction: column; max-height: min(92svh, 46rem);
+  background: var(--lp-panel); border: 1px solid var(--lp-hair-2);
+  border-radius: var(--lp-rad);
+  box-shadow: 0 50px 100px -30px #000;
+}
+.lp-modal-head {
+  display: flex; align-items: start; gap: 1rem;
+  padding: clamp(1.15rem, 3vw, 1.65rem);
+  border-bottom: 1px solid var(--lp-hair);
+}
+.lp-modal-title { margin: 0; font-size: clamp(1.2rem, 3vw, 1.5rem); font-weight: 700; letter-spacing: -0.02em; color: var(--lp-ink); }
+.lp-modal-sub { margin: 0.45rem 0 0; font-size: 0.88rem; line-height: 1.55; color: var(--lp-muted); max-width: 44ch; }
+.lp-modal-x {
+  flex: none; width: 40px; height: 40px; margin: -0.3rem -0.3rem 0 auto;
+  display: grid; place-items: center; cursor: pointer;
+  background: transparent; color: var(--lp-muted);
+  border: 1px solid var(--lp-hair); border-radius: 8px;
+  transition: color .16s ease, border-color .16s ease;
+}
+.lp-modal-x:hover { color: var(--lp-ink); border-color: var(--lp-hair-2); }
+.lp-modal-x svg { width: 17px; height: 17px; }
+
+.lp-modal-body {
+  padding: clamp(1.15rem, 3vw, 1.65rem);
+  overflow-y: auto; display: grid; gap: 0.9rem;
+}
+@media (min-width: 620px) {
+  .lp-modal-body { grid-template-columns: 1fr 1fr; }
+  .lp-field--wide { grid-column: 1 / -1; }
+}
+
+.lp-field { display: grid; gap: 0.35rem; min-width: 0; }
+.lp-field > label {
+  font-size: 0.78rem; font-weight: 600; color: var(--lp-ink);
+  display: flex; flex-wrap: wrap; gap: 0.4rem; align-items: baseline;
+}
+.lp-field > label span[aria-hidden] { color: var(--lp-accent); }
+.lp-field-opt { font-weight: 400; font-size: 0.72rem; color: var(--lp-muted); }
+.lp-field input,
+.lp-field select,
+.lp-field textarea {
+  font-family: inherit; font-size: 0.94rem; color: var(--lp-ink);
+  width: 100%; min-height: 46px; padding: 0.7rem 0.85rem;
+  background: var(--lp-deep);
+  border: 1px solid var(--lp-hair-2); border-radius: 6px;
+  transition: border-color .16s ease, background-color .16s ease;
+}
+.lp-field textarea { min-height: 84px; resize: vertical; line-height: 1.5; }
+.lp-field input::placeholder, .lp-field textarea::placeholder { color: var(--lp-muted); }
+.lp-field select {
+  appearance: none; -webkit-appearance: none;
+  /* Caret drawn in CSS so the control matches on every platform. */
+  background-image: linear-gradient(45deg, transparent 50%, var(--lp-muted) 50%),
+                    linear-gradient(135deg, var(--lp-muted) 50%, transparent 50%);
+  background-position: calc(100% - 18px) 21px, calc(100% - 13px) 21px;
+  background-size: 5px 5px, 5px 5px;
+  background-repeat: no-repeat;
+  padding-right: 2.25rem;
+}
+/* The select's own dropdown is painted by the OS, so its options need a
+   readable pairing rather than inheriting the dark field. */
+.lp-field select option { background: var(--lp-panel); color: var(--lp-ink); }
+.lp-field input:hover, .lp-field select:hover, .lp-field textarea:hover { border-color: color-mix(in srgb, var(--color-brand-tint) 44%, transparent); }
+.lp-field input:focus, .lp-field select:focus, .lp-field textarea:focus {
+  outline: none; border-color: var(--lp-accent);
+  background: color-mix(in srgb, var(--color-brand-tint) 8%, var(--lp-deep));
+}
+.lp-field input:focus-visible, .lp-field select:focus-visible, .lp-field textarea:focus-visible {
+  outline: 2px solid var(--lp-accent); outline-offset: 2px;
+}
+.lp-field input:invalid:not(:placeholder-shown) { border-color: color-mix(in srgb, var(--lp-accent) 70%, transparent); }
+
+/* Honeypot: out of sight for people, still in the DOM for bots. */
+.lp-hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+
+.lp-modal-foot {
+  display: flex; flex-wrap: wrap; gap: 0.6rem; align-items: center;
+  padding: clamp(1.15rem, 3vw, 1.65rem);
+  border-top: 1px solid var(--lp-hair);
+}
+.lp-modal-note { margin: 0; flex: 1 1 14rem; font-size: 0.76rem; line-height: 1.45; color: var(--lp-muted); }
+
+/* Confirmation replaces the form in place — no redirect-and-hunt. */
+.lp-modal-done { display: grid; gap: 0.6rem; padding: clamp(1.5rem, 4vw, 2.5rem); text-align: center; justify-items: center; }
+.lp-modal-done-ico {
+  width: 44px; height: 44px; border-radius: 999px; display: grid; place-items: center;
+  background: color-mix(in srgb, var(--lp-accent) 18%, transparent); color: var(--lp-accent);
+}
+.lp-modal-done-ico svg { width: 22px; height: 22px; }
+
+@media (max-width: 479px) {
+  .lp-modal-foot .lp-btn { width: 100%; }
+}
+
+/* ═══ Visibility Check field ════════════════════════════════════════════ */
+.lp-check { display: grid; gap: 0.8rem; width: 100%; max-width: 34rem; text-align: left; }
+.lp-check-grid { display: grid; gap: 0.7rem; }
+@media (min-width: 560px) { .lp-check-grid { grid-template-columns: 1fr 1fr; } }
+.lp-check-grid .lp-field--wide { grid-column: 1 / -1; }
+.lp-check-lab {
+  font-size: 0.66rem; font-weight: 600; letter-spacing: 0.18em;
+  text-transform: uppercase; color: var(--lp-muted);
+}
+.lp-check-row { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.lp-check-input {
+  flex: 1 1 12rem; min-width: 0; min-height: 46px;
+  font-family: inherit; font-size: 0.95rem;
+  padding: 0.8rem 1rem; border-radius: 6px;
+  background: color-mix(in srgb, var(--color-brand-tint) 9%, transparent);
+  border: 1px solid var(--lp-hair-2);
+  color: var(--lp-ink);
+  -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+  transition: border-color .18s ease, background-color .18s ease;
+}
+.lp-check-input::placeholder { color: var(--lp-muted); }
+.lp-check-input:hover { border-color: color-mix(in srgb, var(--color-brand-tint) 44%, transparent); }
+.lp-check-input:focus {
+  outline: none; background: color-mix(in srgb, var(--color-brand-tint) 14%, transparent);
+  border-color: var(--lp-accent);
+}
+.lp-check-input:focus-visible { outline: 2px solid var(--lp-accent); outline-offset: 2px; }
+.lp-check-hint { margin: 0; font-size: 0.79rem; line-height: 1.5; color: var(--lp-muted); }
+.lp-check-hint a,
+.lp-check-link {
+  display: inline;
+  color: var(--lp-ink); text-decoration: underline; text-underline-offset: 2px;
+  font: inherit; background: none; border: 0; padding: 0; cursor: pointer;
+}
+.lp-check-hint a:hover, .lp-check-link:hover { color: var(--lp-accent); }
+
+/* ═══ Footer ════════════════════════════════════════════════════════════ */
+.lp-foot { background: var(--lp-black); border-top: 1px solid var(--lp-hair); padding-block: 1.5rem; }
+.lp-foot-in {
+  max-width: var(--lp-maxw); margin-inline: auto; padding-inline: var(--lp-gutter);
+  display: flex; flex-wrap: wrap; gap: 0.25rem 1.75rem; align-items: center;
+  font-size: 0.78rem; color: var(--lp-muted);
+}
+.lp-foot-in a {
+  color: var(--lp-muted); text-decoration: none;
+  display: inline-flex; align-items: center; min-height: 44px;
+}
+.lp-foot-in a:hover { color: var(--lp-ink); }
+.lp-foot-links { margin-left: auto; display: flex; flex-wrap: wrap; gap: 0 1.6rem; align-items: center; }
+
+/* ═══ Layout ════════════════════════════════════════════════════════════ */
+@media (min-width: 560px) {
+  .lp-figs { grid-template-columns: repeat(2, 1fr); }
+}
+@media (min-width: 900px) {
+  .lp-figs { grid-template-columns: repeat(4, 1fr); }
+  .lp-grid { grid-template-columns: repeat(2, 1fr); }
+  .lp-tiers { grid-template-columns: repeat(3, 1fr); }
+  .lp-plan-cols { grid-template-columns: repeat(3, 1fr); }
+}
+@media (min-width: 1024px) {
+  .lp-hero-grid { grid-template-columns: 1.05fr 0.95fr; }
+  .lp-tier { display: flex; flex-direction: column; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lp-card:hover .lp-card-shot img { transform: none; }
+  .lp-rail { scroll-behavior: auto; }
+}
