@@ -2360,13 +2360,13 @@ a.contact-channel:hover .contact-channel-arrow {
 /* Section rhythm helpers */
 /* Responsive vertical rhythm — scales down per breakpoint (Elementor-style) so
    large screens breathe without stranding content in dead space. */
-.section { padding-block: 3.25rem; }
-@media (min-width: 768px)  { .section { padding-block: 4.25rem; } }
-@media (min-width: 1280px) { .section { padding-block: 5.25rem; } }
+.section { padding-block: 2.25rem; }
+@media (min-width: 768px)  { .section { padding-block: 2.75rem; } }
+@media (min-width: 1280px) { .section { padding-block: 3rem; } }
 /* Page-intro headers sit right under the fixed nav — they don't need a whole
    section of air above the H1. */
-header.section { padding-top: 2.25rem; }
-@media (min-width: 768px) { header.section { padding-top: 3rem; } }
+header.section { padding-top: 1.75rem; }
+@media (min-width: 768px) { header.section { padding-top: 2.25rem; } }
 .container-x { margin-inline: auto; max-width: 1280px; padding-inline: 1.25rem; }
 @media (min-width: 768px) { .container-x { padding-inline: 2rem; } }
 @media (max-width: 479px) { .container-x { padding-inline: 1rem; } }
@@ -2524,9 +2524,6 @@ header.section { padding-top: 2.25rem; }
    that is ~168px of nothing between a closing line and the next heading, which
    reads as the page having run out. Scoped with :has() to this page shape, so
    the rest of the site keeps its own rhythm. */
-body:has(.svc-detail-head) .section { padding-block: clamp(2rem, 3.4vw, 3rem); }
-body:has(.svc-detail-head) header.section { padding-top: clamp(1.5rem, 2.6vw, 2.25rem); }
-body:has(.svc-detail-head) .faq-section { padding-block: clamp(2rem, 3.4vw, 3rem); }
 body:has(.svc-detail-head) .spotlight { gap: clamp(1.5rem, 3vw, 2.25rem); }
 /* Sitewide CTA band — was a flat --color-ink, which sat oddly next to the
    gradient-and-texture dark bands around it. Same family now. */
@@ -2952,8 +2949,8 @@ a.shot-card:hover > img { filter: saturate(1.03); }
    Sitewide mobile polish — commercial-grade phone layouts
 --------------------------------------------------------------------------- */
 @media (max-width: 767px) {
-  .section { padding-block: 2.75rem; }
-  header.section { padding-top: 1.5rem; }
+  .section { padding-block: 2rem; }
+  header.section { padding-top: 1.35rem; }
 
   .btn {
     padding: 0.88rem 1.35rem;

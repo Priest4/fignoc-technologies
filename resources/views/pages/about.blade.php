@@ -11,7 +11,7 @@
     <header class="section container-x">
         <span class="eyebrow reveal">About</span>
         <h1 class="display mt-5 reveal" style="max-width: 20ch;">A Harare studio that builds — and gets you found.</h1>
-        <p class="mt-6 max-w-2xl text-lg leading-8 reveal" style="color: var(--color-body);">
+        <p class="mt-5 max-w-2xl text-lg leading-8 reveal" style="color: var(--color-body);">
             Fignoc Technologies is a digital product studio and growth agency in Harare. We build and run our own software platforms, and we bring that same engineering to client work — from custom systems to getting businesses found on Google and AI answer engines.
         </p>
     </header>
@@ -19,7 +19,7 @@
     {{-- Approach --}}
     <section class="section container-x" style="border-top: 1px solid var(--color-line-soft);" aria-labelledby="approach">
         <h2 id="approach" class="display reveal" style="font-size: 1.9rem;">How we work</h2>
-        <div class="mt-10 grid gap-5 md:grid-cols-3" data-reveal-group>
+        <div class="mt-7 grid gap-5 md:grid-cols-3" data-reveal-group>
             <div class="reveal step-card">
                 <span class="icon-tile"><x-ficon name="flag" /></span>
                 <h3 class="mt-4" style="font-size: 1.2rem;">Zimbabwe-first</h3>
@@ -42,7 +42,7 @@
     <section id="team" class="section container-x" style="border-top: 1px solid var(--color-line-soft);" aria-labelledby="team-h">
         <span class="eyebrow reveal">Team</span>
         <h2 id="team-h" class="display mt-4 reveal" style="font-size: 1.9rem;">The people behind Fignoc</h2>
-        <div class="mt-10 grid gap-8 sm:grid-cols-2" data-reveal-group>
+        <div class="mt-7 grid gap-6 sm:grid-cols-2" data-reveal-group>
             @foreach ($team as $member)
                 <article class="reveal card card-person">
                     @if ($member->photo_path)
