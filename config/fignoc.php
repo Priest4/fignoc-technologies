@@ -51,7 +51,7 @@ return [
         ],
         [
             'q' => 'What products has Fignoc built?',
-            'a' => 'Recruitment263 and NestZim are live. CV263, Shop263 and NiceJob are in active development. WLSA Zimbabwe is a live client platform.',
+            'a' => 'Recruitment263, NestZim, Shop263, CV263 and NiceJob are live. WLSA Zimbabwe is a live client platform.',
         ],
         [
             'q' => 'Does Fignoc work with NGOs?',
@@ -68,7 +68,11 @@ return [
     // When ready: ga4 => 'G-XXXXXXXX', search_console_verification => meta token.
     'analytics' => [
         'ga4' => null,
-        'search_console_verification' => null,
+        // Token only — the layout wraps it in <meta name="google-site-verification">.
+        // If Google issued this as a DNS TXT record instead, the full
+        // "google-site-verification=..." string belongs in the DNS zone and the
+        // HTML-tag method uses a different token.
+        'search_console_verification' => 'QfSQ-ikJCfMKoggbX2DRshD2WAqqgiDE88nlN8YrYDI',
         // Microsoft Clarity project ID. The landing page sells session replay
         // and heatmaps; not running them on our own page is indefensible.
         'clarity' => null,

@@ -606,8 +606,8 @@
                 <h2 id="lp-close-h" class="lp-h2">Send us your website address.</h2>
                 <p class="lp-lede">
                     Within one business day we’ll tell you what Google sees, what’s slowing your site down,
-                    and where visitors leave before they contact you. Free. No obligation. If your site is
-                    fine, we’ll say so and leave you alone.
+                    and where visitors leave before they contact you. Free, with no obligation. If your site
+                    is already performing, we’ll tell you so.
                 </p>
 
                 {{-- Types straight into the WhatsApp message: no form handler, no

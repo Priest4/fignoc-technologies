@@ -90,8 +90,9 @@ body.is-bare ::selection { background: var(--color-accent); color: #fff; }
   display: flex; align-items: center; gap: 0.6rem;
 }
 .lp-mark {
-  display: inline-flex; align-items: center; min-height: 44px;
-  margin-right: auto; text-decoration: none;
+  display: inline-flex; flex-direction: column; justify-content: center;
+  align-items: flex-start; min-height: 44px;
+  margin-right: auto; text-decoration: none; line-height: 1;
   font-size: clamp(1.2rem, 3.2vw, 1.6rem); font-weight: 600;
   /* Tracking tightens as the size grows — 0.3em at 1.6rem would run the
      wordmark into the CTA on a narrow header. */
@@ -99,6 +100,13 @@ body.is-bare ::selection { background: var(--color-accent); color: #fff; }
   color: var(--lp-ink);
 }
 .lp-mark b { color: var(--lp-accent); font-weight: 500; }
+.lp-mark-name { display: inline-flex; align-items: baseline; }
+.lp-mark-sub {
+  margin-top: 4px;
+  font-size: 0.52em; font-weight: 500;
+  letter-spacing: 0.24em; text-transform: uppercase;
+  color: var(--lp-muted);
+}
 .lp-burger {
   width: 44px; height: 44px; flex: none; order: 3; padding: 0;
   display: grid; place-items: center; cursor: pointer;

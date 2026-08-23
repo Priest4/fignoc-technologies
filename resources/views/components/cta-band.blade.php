@@ -12,7 +12,7 @@
     'image' => 'images/people/team-office.jpg',
 ])
 
-<section aria-labelledby="cta-heading" style="background: var(--color-ink);">
+<section aria-labelledby="cta-heading" class="cta-band">
     <div class="container-x section">
         <div class="grid gap-10 lg:grid-cols-[1.4fr_1fr] lg:items-center reveal">
             <div>

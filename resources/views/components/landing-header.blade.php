@@ -25,7 +25,10 @@
 
 <header class="lp-head">
     <div class="lp-head-bar">
-        <a href="{{ route('home') }}" class="lp-mark">Fignoc<b>.</b></a>
+        <a href="{{ route('home') }}" class="lp-mark">
+            <span class="lp-mark-name">Fignoc<b>.</b></span>
+            <span class="lp-mark-sub">Technologies</span>
+        </a>
 
         @if ($wa)
             <button type="button" class="lp-btn lp-btn--primary lp-btn--sm" data-quote>

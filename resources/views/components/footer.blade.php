@@ -33,7 +33,8 @@
             {{-- Brand + socials --}}
             <div>
                 <a href="{{ route('home') }}" class="wordmark" style="color: var(--color-ink);">
-                    Fignoc<span class="wordmark-dot">.</span>
+                    <span class="wordmark-name">Fignoc<span class="wordmark-dot">.</span></span>
+                    <span class="wordmark-sub">Technologies</span>
                 </a>
                 <p class="mt-4 max-w-xs text-sm leading-7" style="color: var(--color-muted);">
                     A Harare digital product studio &amp; growth agency. We build our own platforms and rank businesses where Zimbabwe is searching — including AI answer engines.
