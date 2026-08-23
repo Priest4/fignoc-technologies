@@ -110,8 +110,8 @@
 [x-cloak] { display: none !important; }
 
 /* Push content clear of the floating pill header. */
-body { padding-top: 92px; }
-@media (max-width: 767px) { body { padding-top: 84px; } }
+body { padding-top: 100px; }
+@media (max-width: 767px) { body { padding-top: 92px; } }
 html, body { overflow-x: clip; }
 
 /* Accessible skip link (brief §10 keyboard nav). */
@@ -366,7 +366,7 @@ html.motion .hero-urlpill { animation: badgeFloat 6.5s ease-in-out infinite 0.6s
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 64px;
+  height: 72px;
   padding-inline: 1rem;
   gap: 0.75rem;
 }
@@ -381,7 +381,7 @@ html.motion .hero-urlpill { animation: badgeFloat 6.5s ease-in-out infinite 0.6s
   align-items: flex-start;
   justify-content: center;
   font-weight: 700;
-  font-size: 1.25rem;
+  font-size: clamp(1.35rem, 2.4vw, 1.7rem);
   line-height: 1;
   letter-spacing: -0.03em;
   color: var(--color-ink);
@@ -622,7 +622,7 @@ body.menu-open .wa-float { opacity: 0; pointer-events: none; }
 
 /* Offset page content for the fixed header (skip on the pinned home hero,
    which sits under the header by design). */
-main > :first-child:not([data-hero-pin]) { scroll-margin-top: 90px; }
+main > :first-child:not([data-hero-pin]) { scroll-margin-top: 98px; }
 
 /* ---------------------------------------------------------------------------
    Footer
@@ -2375,7 +2375,7 @@ header.section { padding-top: 2.25rem; }
    Mega-menu dropdowns (Elementor-style nav)
 --------------------------------------------------------------------------- */
 .mega {
-  position: fixed; top: 90px; left: 50%; transform: translateX(-50%); z-index: 44;
+  position: fixed; top: 98px; left: 50%; transform: translateX(-50%); z-index: 44;
   width: min(1100px, calc(100% - 2rem));
   background: var(--color-paper);
   border: 1px solid var(--color-line-soft);
@@ -2414,8 +2414,8 @@ header.section { padding-top: 2.25rem; }
 --------------------------------------------------------------------------- */
 .hero-video {
   position: relative;
-  margin-top: -92px;                 /* bleed under the fixed pill header (body pads 92px) */
-  padding-top: 92px;
+  margin-top: -100px;                /* bleed under the fixed pill header (body pads 100px) */
+  padding-top: 100px;
   min-height: min(94svh, 900px);
   display: flex;
   align-items: center;
@@ -2473,7 +2473,7 @@ header.section { padding-top: 2.25rem; }
 --------------------------------------------------------------------------- */
 .cine-hero {
   position: relative;
-  margin-top: -92px;
+  margin-top: -100px;
   background:
     radial-gradient(120% 105% at 50% 0%,
       color-mix(in srgb, var(--color-navy) 52%, var(--color-ink-deep)) 0%,
@@ -2976,7 +2976,7 @@ a.shot-card:hover > img { filter: saturate(1.03); }
   .contact-form-foot { flex-direction: column; align-items: stretch; }
   .contact-form-note { max-width: none; text-align: center; }
 
-  .cine-hero { margin-top: -84px; }
+  .cine-hero { margin-top: -92px; }
   .cine-headline .mt-8 { gap: 0.65rem !important; }
   .cine-headline .btn { width: 100%; max-width: 20rem; }
 
@@ -2985,14 +2985,14 @@ a.shot-card:hover > img { filter: saturate(1.03); }
 }
 
 @media (max-width: 479px) {
-  .nav-bar { height: 58px; padding-inline: 0.85rem; }
-  .wordmark { font-size: 1.15rem; }
+  .nav-bar { height: 62px; padding-inline: 0.85rem; }
+  .wordmark { font-size: 1.3rem; }
   .mobile-menu {
     padding-top: calc(14px + 58px + 0.85rem);
     padding-inline: 1rem;
   }
-  body { padding-top: 78px; }
-  .cine-hero { margin-top: -78px; }
+  body { padding-top: 82px; }
+  .cine-hero { margin-top: -82px; }
 
   .trust-strip { gap: 0.45rem; }
   .trust-pill { font-size: 0.78rem; padding: 0.4rem 0.7rem; }
