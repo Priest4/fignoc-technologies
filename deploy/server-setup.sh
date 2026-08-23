@@ -4,27 +4,34 @@
 #
 # Run it over SSH from inside the cloned repo:
 #
-#   bash ~/fignoc/deploy/server-setup.sh            # report only, changes nothing
-#   bash ~/fignoc/deploy/server-setup.sh --apply    # actually make the changes
+#   bash deploy/server-setup.sh            # report only, changes nothing
+#   bash deploy/server-setup.sh --apply    # actually make the changes
 #
 # What --apply does:
 #   1. writes deploy/local.env pinning the PHP binary it found
 #   2. creates .env from deploy/env.production.example and generates APP_KEY
-#   3. points public_html at this app's public/ directory (symlink), backing up
-#      whatever was there first -- or falls back to the copy layout
-#   4. creates storage/ subdirectories and the public/storage symlink
+#   3. creates storage/ subdirectories and the public/storage symlink
+#   4. web root, per --layout:
+#        docroot (DEFAULT) -- assumes the domain's document root in cPanel is
+#            already set to <app>/public. Touches nothing outside the app.
+#        symlink -- replaces ~/public_html with a symlink to <app>/public,
+#            moving the old one to public_html.bak.<timestamp> first.
+#            ONLY for accounts where public_html belongs to THIS site.
+#        copy -- leaves public_html alone here; deploy.sh rsyncs public/ into
+#            it on every deploy and writes a front-controller shim.
 #
-# It never drops a database and never deletes public_html without backing it up.
+# It never drops a database and never deletes public_html.
 #
 set -Eeuo pipefail
 
 APP_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)"
 APPLY=0
-LAYOUT="symlink"
+LAYOUT="docroot"
 
 for arg in "$@"; do
     case "$arg" in
         --apply) APPLY=1 ;;
+        --layout=docroot) LAYOUT="docroot" ;;
         --layout=symlink) LAYOUT="symlink" ;;
         --layout=copy)    LAYOUT="copy" ;;
         -h|--help)
@@ -35,7 +42,13 @@ for arg in "$@"; do
     esac
 done
 
-PUBLIC_HTML="${PUBLIC_HTML:-$HOME/public_html}"
+# In docroot layout the "web root" IS the app's own public dir, so deploy.sh
+# sees them as identical and never copies or links anything.
+if [ "$LAYOUT" = "docroot" ]; then
+    PUBLIC_HTML="${PUBLIC_HTML:-$APP_DIR/public}"
+else
+    PUBLIC_HTML="${PUBLIC_HTML:-$HOME/public_html}"
+fi
 
 say()  { printf '  %s\n' "$*"; }
 head2() { printf '\n== %s\n' "$*"; }
@@ -155,7 +168,15 @@ head2 "Web root"
 app_public_real="$(readlink -f "$APP_DIR/public")"
 pub_real="$(readlink -f "$PUBLIC_HTML" 2>/dev/null || true)"
 
-if [ "$pub_real" = "$app_public_real" ]; then
+if [ "$LAYOUT" = "docroot" ]; then
+    ok "docroot layout -- nothing outside $APP_DIR is touched"
+    say "Set the domain's document root in cPanel -> Domains to:"
+    say "    ${APP_DIR#"$HOME"/}/public"
+    if [ -e "$HOME/public_html" ] && [ ! -L "$HOME/public_html" ]; then
+        say "(~/public_html is left completely alone -- on a shared account it"
+        say " usually belongs to a different site.)"
+    fi
+elif [ "$pub_real" = "$app_public_real" ]; then
     ok "$PUBLIC_HTML already resolves to $APP_DIR/public -- nothing to do"
 elif [ "$LAYOUT" = "copy" ]; then
     say "copy layout selected -- deploy.sh will rsync public/ into $PUBLIC_HTML on every deploy"
