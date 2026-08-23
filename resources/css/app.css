@@ -5,6 +5,10 @@
 @source '../**/*.blade.php';
 @source '../**/*.js';
 
+/* Navigation-free landing pages (/website-design). Self-contained `lp-` layer —
+   no Tailwind utilities, so the same file drives the static review prototype. */
+@import './landing.css';
+
 /* ---------------------------------------------------------------------------
    Satoshi — self-hosted variable font (weights 300–900, one 42KB woff2).
    Files live in public/fonts/, preloaded in the <head> partial.
@@ -44,6 +48,9 @@
   --color-navy-mid:     #163190;
   --color-navy-sky:     #1A45B0;
   --color-brand-tint:   #EAF0FB;
+  /* Deep navy ground — the same value the landing page mixes for its
+     background, promoted to a token so both use one source. */
+  --color-ink-deep:     #071335;
 
   --color-heading:      #14213D;   /* dark navy-slate */
   --color-body:         #3F485A;   /* slate */
@@ -84,8 +91,8 @@
   }
   h1, h2, h3, h4, h5, h6 {
     color: var(--color-heading);
-    font-weight: 600;
-    letter-spacing: -0.02em;
+    font-weight: 700;
+    letter-spacing: -0.026em;
     line-height: 1.1;
   }
   ::selection {
@@ -143,7 +150,9 @@ html, body { overflow-x: clip; }
 .display {
   font-size: clamp(1.75rem, 7.2vw, 2rem);
   line-height: 1.04;
-  font-weight: 600;
+  /* 700, matching the landing page. A class beats the h1..h6 type selector, so
+     the base rule alone never reached a real headline. */
+  font-weight: 700;
   letter-spacing: -0.035em;
 }
 @media (min-width: 768px)  { .display { font-size: 2.9rem; } }
@@ -648,7 +657,7 @@ a.card:hover .card-media img,
 .card-body { display: flex; flex-direction: column; gap: 0.75rem; padding: 1.35rem 1.35rem 1.5rem; flex: 1; min-width: 0; }
 .card-top { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; flex-wrap: wrap; }
 .card-index { font-size: 0.8rem; font-weight: 600; color: var(--color-muted); font-variant-numeric: tabular-nums; }
-.card-title { font-size: 1.15rem; font-weight: 600; color: var(--color-heading); }
+.card-title { font-size: 1.15rem; font-weight: 700; color: var(--color-heading); }
 .card-desc { font-size: 0.925rem; line-height: 1.6; color: var(--color-body); }
 .card-arrow { margin-top: auto; display: inline-flex; align-items: center; gap: 0.4rem; font-weight: 600; font-size: 0.85rem; color: var(--color-ink); padding-top: 0.5rem; }
 .card-arrow svg { width: 1rem; height: 1rem; transition: transform 0.2s ease; }
@@ -2436,10 +2445,53 @@ header.section { padding-top: 2.25rem; }
   position: relative;
   margin-top: -92px;
   background:
-    radial-gradient(120% 100% at 50% 0%,
-      color-mix(in srgb, var(--color-navy) 42%, var(--color-ink)) 0%,
-      var(--color-ink) 58%);
+    radial-gradient(120% 105% at 50% 0%,
+      color-mix(in srgb, var(--color-navy) 52%, var(--color-ink-deep)) 0%,
+      color-mix(in srgb, var(--color-ink) 74%, var(--color-ink-deep)) 40%,
+      var(--color-ink-deep) 78%);
   overflow: hidden;
+}
+/* Etched hairlines — the same texture the landing page uses, so the two pages
+   share a surface. ::after, because .insights-close already owns ::before. */
+.cine-hero::after,
+.svc-index-close::after,
+.showcase-grad::after,
+.hero-centered::after {
+  content: '';
+  position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background-image:
+    repeating-radial-gradient(circle at 50% 132%,
+      transparent 0 13px,
+      color-mix(in srgb, var(--color-brand-tint) 13%, transparent) 13px 14px),
+    repeating-linear-gradient(116deg,
+      color-mix(in srgb, var(--color-brand-tint) 7%, transparent) 0 1px,
+      transparent 1px 10px);
+  -webkit-mask-image: radial-gradient(125% 96% at 50% 42%, #000 0%, rgba(0,0,0,0.6) 44%, transparent 80%);
+  mask-image: radial-gradient(125% 96% at 50% 42%, #000 0%, rgba(0,0,0,0.6) 44%, transparent 80%);
+}
+/* On light grounds the same lines have to be navy, not brand tint, or they
+   simply vanish. */
+.showcase-grad::after,
+.hero-centered::after {
+  background-image:
+    repeating-radial-gradient(circle at 50% 132%,
+      transparent 0 13px,
+      color-mix(in srgb, var(--color-navy) 9%, transparent) 13px 14px),
+    repeating-linear-gradient(116deg,
+      color-mix(in srgb, var(--color-navy) 5%, transparent) 0 1px,
+      transparent 1px 10px);
+}
+/* The texture sits behind content in every case. */
+.svc-index-close, .showcase-grad, .hero-centered { position: relative; }
+.cine-hero > *, .svc-index-close > *, .showcase-grad > *, .hero-centered > * { position: relative; z-index: 1; }
+@media (max-width: 640px) {
+  .cine-hero::after, .svc-index-close::after,
+  .showcase-grad::after, .hero-centered::after {
+    background-image:
+      repeating-linear-gradient(116deg,
+        color-mix(in srgb, var(--color-brand-tint) 7%, transparent) 0 1px,
+        transparent 1px 10px);
+  }
 }
 .cine-stage { display: flex; flex-direction: column; }
 .cine-center { position: relative; order: 0; overflow: hidden; }
@@ -2448,7 +2500,7 @@ header.section { padding-top: 2.25rem; }
 /* Mobile: the video fills the centre behind the headline (which defines height). */
 .cine-video { position: absolute; inset: 0; z-index: 0; overflow: hidden; }
 .cine-video > video { width: 100%; height: 100%; object-fit: cover; display: block; }
-.cine-scrim { position: absolute; inset: 0; z-index: 1; background: linear-gradient(180deg, color-mix(in srgb, var(--color-ink) 45%, transparent), color-mix(in srgb, var(--color-ink) 80%, transparent)); }
+.cine-scrim { position: absolute; inset: 0; z-index: 1; background: linear-gradient(180deg, color-mix(in srgb, var(--color-ink-deep) 55%, transparent), color-mix(in srgb, var(--color-ink-deep) 88%, transparent)); }
 .cine-title { display: none; }
 .cine-headline {
   position: relative;
