@@ -13,6 +13,7 @@
         'ngo-systems' => 'heart', 'ecommerce' => 'cart', 'seo' => 'search',
         'aeo' => 'sparkles', 'geo' => 'sparkles', 'content-strategy' => 'layers',
         'google-ads' => 'trending-up', 'social-ads' => 'trending-up', 'customer-journey-optimisation' => 'trending-up',
+        'app-development' => 'phone',
     ];
     $prodIcon = ['cv263' => 'briefcase', 'recruitment263' => 'search', 'shop263' => 'cart', 'nestzim' => 'pin', 'nicejob' => 'heart'];
 @endphp

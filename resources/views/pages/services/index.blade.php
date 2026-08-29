@@ -22,6 +22,7 @@
         'web-development' => 'images/live/cv263.jpg',
         'web-systems' => 'images/live/nestzim.jpg',
         'custom-software' => 'images/live/recruitment263.jpg',
+        'app-development' => 'images/live/mobile/recruitment263.jpg',
         'ngo-systems' => 'images/live/wlsa.jpg',
         'ecommerce' => 'images/live/shop263.jpg',
         'seo' => 'images/proof/seo-results.jpg',
@@ -38,6 +39,7 @@
         'ngo-systems' => 'heart', 'ecommerce' => 'cart', 'seo' => 'search',
         'aeo' => 'sparkles', 'geo' => 'sparkles', 'content-strategy' => 'layers',
         'google-ads' => 'trending-up', 'social-ads' => 'trending-up', 'customer-journey-optimisation' => 'trending-up',
+        'app-development' => 'phone',
     ];
 
     $total = $grouped->flatten(1)->count();

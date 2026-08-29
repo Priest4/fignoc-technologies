@@ -9,6 +9,7 @@
         'web-development'                => 'images/live/cv263.jpg',
         'web-systems'                    => 'images/live/nestzim.jpg',
         'custom-software'                => 'images/live/recruitment263.jpg',
+        'app-development'                => 'images/live/mobile/recruitment263.jpg',
         'ngo-systems'                    => 'images/live/wlsa.jpg',
         'ecommerce'                      => 'images/live/shop263.jpg',
         'seo'                            => 'images/proof/seo-results.jpg',
@@ -26,6 +27,7 @@
         'web-development'  => ['name' => 'CV263',          'slug' => 'cv263',          'line' => 'a fast, crawlable careers platform we designed, built and run.'],
         'web-systems'      => ['name' => 'NestZim',        'slug' => 'nestzim',        'line' => 'our live rentals marketplace — logins, dashboards and real-time alerts.'],
         'custom-software'  => ['name' => 'Recruitment263', 'slug' => 'recruitment263', 'line' => 'a national job platform we architected, built and now operate.'],
+        'app-development'  => ['name' => 'NiceJob', 'slug' => 'nicejob', 'line' => 'our live marketplace app — two-way reviews, real-time chat, and no cut taken on payments.'],
         'ngo-systems'      => ['name' => 'WLSA Zimbabwe',  'slug' => null,             'line' => 'the content and information platform we built and maintain for the NGO.'],
         'ecommerce'        => ['name' => 'Shop263',        'slug' => 'shop263',        'line' => 'our own store platform with EcoCash, Paynow and a built-in POS.'],
         'seo'              => ['name' => 'Recruitment263', 'slug' => 'recruitment263', 'line' => 'a platform we rank — 12.5K Google impressions a month at an average position of #6.'],
@@ -152,6 +154,7 @@
                 'ngo-systems' => 'heart', 'ecommerce' => 'cart', 'seo' => 'search',
                 'aeo' => 'sparkles', 'geo' => 'sparkles', 'content-strategy' => 'layers',
                 'google-ads' => 'trending-up', 'social-ads' => 'trending-up', 'customer-journey-optimisation' => 'trending-up',
+        'app-development' => 'phone',
             ];
         @endphp
         <section class="svc-related section container-x" aria-labelledby="related-services">

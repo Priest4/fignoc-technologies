@@ -17,7 +17,9 @@
        insight articles and the landing page past the cut. Take the fullest
        brand suffix that still fits, and none if neither does. */
     $brandSuffixes = [' — ' . $siteName, ' — Fignoc'];
-    $fullTitle = $siteName . ' — software and digital growth in Zimbabwe';
+    // The homepage is the strongest page on the site, so its title carries the
+    // two things people actually search: what we do and where we are.
+    $fullTitle = 'Web & software development company in Harare — ' . 'Fignoc';
 
     if ($title) {
         $fullTitle = $title;
