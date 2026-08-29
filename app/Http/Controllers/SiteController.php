@@ -84,6 +84,12 @@ class SiteController extends Controller
         ]);
     }
 
+    /** Pricing for websites, software and apps. Figures come from config. */
+    public function pricing()
+    {
+        return view('pages.pricing');
+    }
+
     public function about()
     {
         return view('pages.about', [
@@ -158,6 +164,7 @@ class SiteController extends Controller
             ['name' => 'products', 'priority' => '0.8'],
             ['name' => 'about', 'priority' => '0.7'],
             ['name' => 'contact', 'priority' => '0.8'],
+            ['name' => 'pricing', 'priority' => '0.9'],
             ['name' => 'landing.website', 'priority' => '0.9'],
             ['name' => 'insights', 'priority' => '0.7'],
             ['name' => 'privacy', 'priority' => '0.3'],

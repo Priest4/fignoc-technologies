@@ -3055,3 +3055,76 @@ a.shot-card:hover > img { filter: saturate(1.03); }
     height: auto !important;
   }
 }
+
+/* ---------------------------------------------------------------------------
+   /pricing — websites, software and apps on one page.
+   Card shapes follow the landing page's tiers so the two pages quote the same
+   figures in the same visual language, but on the light ground the rest of the
+   site uses.
+--------------------------------------------------------------------------- */
+.pricing-grid { display: grid; gap: 1.1rem; align-items: stretch; }
+.pricing-card {
+  position: relative; display: flex; flex-direction: column; gap: 0.85rem;
+  padding: clamp(1.35rem, 2.6vw, 1.85rem);
+  background: var(--color-paper);
+  border: 1px solid var(--color-line);
+  border-radius: 14px;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04), 0 14px 34px -22px rgba(15, 23, 42, 0.28);
+}
+.pricing-card.is-featured {
+  border-color: var(--color-accent);
+  box-shadow: 0 2px 4px rgba(230, 57, 70, 0.08), 0 26px 56px -28px rgba(230, 57, 70, 0.42);
+}
+.pricing-card-badge { position: absolute; top: -0.7rem; left: clamp(1.35rem, 2.6vw, 1.85rem); }
+.pricing-card-name { font-size: 1.2rem; font-weight: 700; color: var(--color-heading); }
+.pricing-card-tag { font-size: 0.92rem; font-style: italic; color: var(--color-muted); }
+.pricing-card-list { display: grid; gap: 0.5rem; margin: 0; padding: 0; list-style: none; }
+.pricing-card-list li {
+  display: grid; grid-template-columns: auto 1fr; gap: 0.55rem;
+  font-size: 0.92rem; line-height: 1.5; color: var(--color-body);
+}
+.pricing-card-list svg { width: 15px; height: 15px; margin-top: 0.25rem; color: var(--color-accent); flex: none; }
+/* Price and CTA pinned to the foot so the three cards line up. */
+.pricing-card-foot { margin-top: auto; display: grid; gap: 0.75rem; padding-top: 0.5rem; }
+.pricing-card-price { display: flex; align-items: baseline; gap: 0.35rem; flex-wrap: wrap; margin: 0; }
+.pricing-card-pre {
+  font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--color-muted);
+}
+.pricing-card-num {
+  font-size: 2.2rem; font-weight: 700; letter-spacing: -0.045em;
+  color: var(--color-heading); font-variant-numeric: tabular-nums;
+}
+.pricing-card-unit { font-size: 0.9rem; color: var(--color-muted); }
+.pricing-was { margin: 0; font-size: 0.85rem; color: var(--color-muted); }
+.pricing-was s { text-decoration-color: var(--color-accent); }
+.pricing-was span {
+  margin-left: 0.4rem; font-size: 0.68rem; font-weight: 700;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  color: #fff; background: var(--color-accent);
+  padding: 0.18rem 0.4rem; border-radius: 3px;
+}
+
+/* Software and apps: one figure and a scope, because inventing tiers for work
+   that is genuinely quoted would be inventing prices. */
+.pricing-quote {
+  display: grid; gap: 1.5rem;
+  padding: clamp(1.35rem, 3vw, 2rem);
+  border: 1px solid var(--color-line);
+  border-left: 3px solid var(--color-accent);
+  border-radius: 14px;
+  background: var(--color-brand-tint);
+}
+.pricing-quote-figure { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.4rem; }
+.pricing-quote-list { display: grid; gap: 0.55rem; margin: 0; padding: 0; list-style: none; }
+.pricing-quote-list li {
+  display: grid; grid-template-columns: auto 1fr; gap: 0.55rem;
+  font-size: 0.94rem; line-height: 1.5; color: var(--color-body);
+}
+.pricing-quote-list svg { width: 15px; height: 15px; margin-top: 0.25rem; color: var(--color-accent); flex: none; }
+
+@media (min-width: 860px) {
+  .pricing-grid { grid-template-columns: repeat(3, 1fr); }
+  .pricing-quote { grid-template-columns: auto 1fr; gap: 2.5rem; align-items: center; }
+}
+@media (max-width: 479px) { .pricing-card-foot .btn { width: 100%; } }
